@@ -47,6 +47,7 @@ How to respond:
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
 
+  try {
   const { message, stage, history } = await req.json();
 
   // 1. Embed user message
@@ -112,4 +113,12 @@ Deno.serve(async (req) => {
       'Cache-Control': 'no-cache',
     },
   });
+
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return new Response(JSON.stringify({ error: msg }), {
+      status: 500,
+      headers: { ...CORS, 'Content-Type': 'application/json' },
+    });
+  }
 });
