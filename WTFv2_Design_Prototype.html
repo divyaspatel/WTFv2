@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WTF — What the Fertility</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --cream:#F7F3EC;
+  --cream2:#EDE6D9;
+  --tc:#C1440E;
+  --tcL:#F5EBE5;
+  --sage:#7A9268;
+  --sageL:#ECF1E8;
+  --dark:#2C2218;
+  --mid:#7A6E65;
+  --lt:#B0A69E;
+  --bdr:#E2D9CE;
+  --wht:#FFFFFF
+}
+
+html,body{
+  background:#CFC8BB;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:32px 16px 64px;
+  font-family:'DM Sans',-apple-system,sans-serif
+}
+
+/* ── PHONE FRAME ── */
+#phone{
+  width:375px;
+  height:790px;
+  background:var(--cream);
+  border-radius:48px;
+  overflow:hidden;
+  box-shadow:0 0 0 2px #B5ADA0,0 32px 80px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.6);
+  display:flex;
+  flex-direction:column;
+  position:relative
+}
+
+/* ── STATUS BAR ── */
+#sb{
+  height:46px;
+  padding:14px 26px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  flex-shrink:0;
+  background:var(--cream);
+  z-index:20;
+  position:relative
+}
+.sb-t{font-size:14px;font-weight:500;color:var(--dark);letter-spacing:-.02em}
+.sb-ic{display:flex;gap:5px;align-items:center;padding-top:1px}
+
+/* ── SCREEN CONTAINER ── */
+#sc{flex:1;position:relative;overflow:hidden}
+
+/* ── SCREENS ── */
+.scr{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  background:var(--cream);
+  opacity:0;pointer-events:none;
+  transition:opacity .22s ease,transform .22s ease;
+  transform:translateY(10px)
+}
+.scr.on{opacity:1;pointer-events:all;transform:translateY(0)}
+
+/* ── WORDMARK ── */
+.wm{display:flex;align-items:baseline;gap:7px}
+.wm-w{font-family:'Playfair Display',Georgia,serif;font-weight:500;color:var(--tc);letter-spacing:-.01em;line-height:1}
+.wm-f{font-size:9px;font-weight:400;letter-spacing:.11em;text-transform:uppercase;color:var(--lt);line-height:1.3}
+
+/* ── BACK BTN ── */
+.bk{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:var(--cream2);border-radius:50%;border:none;cursor:pointer;
+  color:var(--dark);font-size:15px;transition:background .15s;flex-shrink:0;font-family:inherit
+}
+.bk:hover{background:var(--bdr)}
+
+/* ══════════════════════════════
+   S1 — PERSONA SELECTOR
+══════════════════════════════ */
+.s1-wrap{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.s1-head{padding:22px 22px 16px}
+.s1-hed{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:22px;font-weight:500;color:var(--dark);
+  margin-top:16px;margin-bottom:9px;line-height:1.3
+}
+.s1-sub{font-size:13px;color:var(--mid);line-height:1.65}
+.s1-cards{padding:4px 18px 48px;display:flex;flex-direction:column;gap:10px}
+
+.pc{
+  background:var(--wht);border-radius:18px;
+  padding:16px 16px 16px 16px;
+  display:flex;align-items:center;gap:13px;
+  border:1.5px solid var(--bdr);cursor:pointer;
+  transition:all .18s;position:relative
+}
+.pc.live{border-color:var(--tc)}
+.pc.live:hover{box-shadow:0 4px 18px rgba(193,68,14,.13);transform:translateY(-1px)}
+.pc.live:active{transform:scale(.98)}
+.pc.dim{opacity:.42;cursor:not-allowed}
+
+.cs-tag{
+  position:absolute;top:10px;right:11px;
+  background:var(--cream2);color:var(--mid);
+  font-size:8px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 7px;border-radius:20px
+}
+
+.pc-ill{width:66px;height:66px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.pc-bd{flex:1}
+.pc-tag{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--tc);margin-bottom:3px}
+.pc-ttl{font-family:'Playfair Display',Georgia,serif;font-size:14px;font-weight:500;color:var(--dark);margin-bottom:3px;line-height:1.3}
+.pc-dsc{font-size:11.5px;color:var(--mid);line-height:1.45}
+.pc-arr{color:var(--tc);font-size:20px;flex-shrink:0;line-height:1}
+
+/* ══════════════════════════════
+   S2 — EDITORIAL
+══════════════════════════════ */
+.ed-hd{
+  padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--cream);z-index:5
+}
+.ed-scroll{flex:1;overflow-y:auto;padding-bottom:80px;-webkit-overflow-scrolling:touch}
+
+.ed-hero{padding:22px 22px 20px;border-bottom:1px solid var(--bdr)}
+.ed-pill{
+  display:inline-flex;align-items:center;
+  background:var(--tcL);color:var(--tc);
+  font-size:9px;font-weight:500;padding:3px 9px;border-radius:20px;
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:11px
+}
+.ed-ttl{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:25px;font-weight:500;color:var(--dark);
+  line-height:1.2;margin-bottom:10px
+}
+.ed-lead{font-size:13px;color:var(--mid);line-height:1.75}
+
+.ed-sec{padding:22px 22px;border-bottom:1px solid var(--bdr)}
+.ed-lbl{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.ed-lbl span{font-size:8.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);white-space:nowrap}
+.ed-lbl::after{content:'';flex:1;height:1px;background:var(--sageL)}
+
+.ed-sttl{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:17px;font-weight:500;color:var(--dark);
+  margin-bottom:13px;line-height:1.35
+}
+.ed-bdy{font-size:13px;line-height:1.78;color:var(--mid)}
+
+/* Fear list */
+.fl{display:flex;flex-direction:column}
+.fi{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.fi:last-child{border-bottom:none}
+.fi-pct{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:17px;font-weight:500;color:var(--tc);
+  min-width:38px;line-height:1.2;flex-shrink:0
+}
+.fi-txt{font-size:12px;color:var(--dark);line-height:1.6;flex:1}
+
+/* Outcomes */
+.oi{background:var(--cream2);border-radius:11px;padding:13px 15px;margin-bottom:8px}
+.oi-stat{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:var(--sage);font-weight:500;margin-bottom:4px}
+.oi-txt{font-size:11.5px;color:var(--mid);line-height:1.55}
+
+/* Wish quotes */
+.wb{padding:13px 15px;border-left:3px solid var(--tc);background:var(--tcL);border-radius:0 10px 10px 0;margin-bottom:9px}
+.wb-txt{font-size:12.5px;color:var(--dark);line-height:1.68;font-style:italic}
+
+/* Sticky CTA */
+.sc-ft{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px 18px 20px;
+  background:linear-gradient(to top,var(--cream) 62%,rgba(247,243,236,0));
+  z-index:5
+}
+.tk-btn{
+  width:100%;padding:14px;
+  background:var(--tc);color:var(--wht);border:none;border-radius:13px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:background .15s,transform .1s;letter-spacing:.01em
+}
+.tk-btn:hover{background:#A83A0C}
+.tk-btn:active{transform:scale(.98)}
+
+/* ══════════════════════════════
+   S3 — ORIENTATION
+══════════════════════════════ */
+.ori-wrap{flex:1;overflow-y:auto;padding:24px 22px 32px;-webkit-overflow-scrolling:touch}
+.ori-bk{
+  display:flex;align-items:center;gap:5px;
+  color:var(--mid);font-size:12.5px;cursor:pointer;
+  background:none;border:none;padding:0;margin-bottom:26px;font-family:inherit
+}
+.ori-ic{
+  width:50px;height:50px;background:var(--tcL);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px
+}
+.ori-hed{
+  font-family:'Playfair Display',Georgia,serif;
+  font-size:23px;font-weight:500;color:var(--dark);margin-bottom:10px;line-height:1.3
+}
+.ori-bdy{font-size:13px;color:var(--mid);line-height:1.75;margin-bottom:22px}
+.ori-rules{margin-bottom:28px;display:flex;flex-direction:column;gap:12px}
+.ori-rule{display:flex;align-items:flex-start;gap:10px}
+.ori-dot{width:5px;height:5px;border-radius:50%;background:var(--sage);flex-shrink:0;margin-top:7px}
+.ori-rt{font-size:13px;color:var(--dark);line-height:1.6}
+.ori-cta{
+  width:100%;padding:14px;
+  background:var(--tc);color:var(--wht);border:none;border-radius:13px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:background .15s;margin-bottom:14px
+}
+.ori-cta:hover{background:#A83A0C}
+.ori-priv{text-align:center;font-size:10px;color:var(--lt);line-height:1.5}
+
+/* ══════════════════════════════
+   S4 — CHAT
+══════════════════════════════ */
+.ch-hd{
+  padding:11px 18px;display:flex;align-items:center;
+  border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--cream)
+}
+.ch-av{
+  width:32px;height:32px;background:var(--tcL);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:13px;color:var(--tc);font-weight:500;
+  margin-left:10px;flex-shrink:0
+}
+.ch-inf{flex:1;margin-left:9px}
+.ch-nm{font-size:13px;font-weight:500;color:var(--dark)}
+.ch-st{font-size:10px;color:var(--sage)}
+
+.ch-msgs{
+  flex:1;overflow-y:auto;
+  padding:16px 16px 10px;
+  display:flex;flex-direction:column;gap:12px;
+  -webkit-overflow-scrolling:touch
+}
+
+.msg{display:flex;flex-direction:column}
+.msg.u{align-items:flex-end}
+.msg.b{align-items:flex-start}
+.msg-row{display:flex;align-items:flex-end;gap:6px}
+.msg.b .msg-row{flex-direction:row}
+.msg.u .msg-row{flex-direction:row-reverse}
+
+.m-av{
+  width:26px;height:26px;border-radius:50%;background:var(--tcL);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:10px;color:var(--tc);font-weight:500;flex-shrink:0
+}
+.m-bbl{padding:10px 13px;border-radius:16px;font-size:12.5px;line-height:1.68;max-width:224px}
+.msg.u .m-bbl{background:var(--tc);color:var(--wht);border-radius:16px 16px 3px 16px}
+.msg.b .m-bbl{background:var(--wht);color:var(--dark);border:1px solid var(--bdr);border-radius:16px 16px 16px 3px}
+
+/* Typing */
+.t-row{display:flex;align-items:center;gap:6px}
+.t-bbl{
+  background:var(--wht);border:1px solid var(--bdr);
+  border-radius:16px 16px 16px 3px;
+  padding:12px 14px;display:flex;gap:4px;align-items:center
+}
+.td{width:5px;height:5px;border-radius:50%;background:var(--lt);animation:tda 1.15s infinite}
+.td:nth-child(2){animation-delay:.17s}
+.td:nth-child(3){animation-delay:.34s}
+@keyframes tda{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+
+/* Chips */
+.ch-chips{
+  padding:7px 16px 6px;display:flex;gap:6px;
+  overflow-x:auto;flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch
+}
+.ch-chips::-webkit-scrollbar{display:none}
+.chip{
+  white-space:nowrap;padding:7px 12px;border-radius:18px;
+  border:1px solid var(--bdr);background:var(--wht);
+  font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--dark);
+  cursor:pointer;transition:all .14s;flex-shrink:0
+}
+.chip:hover{border-color:var(--tc);color:var(--tc);background:var(--tcL)}
+.chip.used{opacity:.35;pointer-events:none}
+
+/* Input */
+.ch-in{
+  padding:9px 14px 22px;display:flex;align-items:center;gap:7px;
+  flex-shrink:0;border-top:1px solid var(--bdr);background:var(--cream)
+}
+.ch-inp{
+  flex:1;padding:10px 15px;border-radius:22px;
+  border:1.5px solid var(--bdr);background:var(--wht);
+  font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--dark);
+  outline:none;transition:border-color .18s
+}
+.ch-inp:focus{border-color:var(--tc)}
+.ch-inp::placeholder{color:var(--lt)}
+.snd-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--tc);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .14s
+}
+.snd-btn:hover{background:#A83A0C}
+.snd-btn svg{width:14px;height:14px;fill:white}
+</style>
+</head>
+<body>
+
+<div id="phone">
+
+  <!-- ── STATUS BAR ── -->
+  <div id="sb">
+    <span class="sb-t">9:41</span>
+    <div class="sb-ic">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="var(--dark)">
+        <rect x="0" y="5" width="2.5" height="6" rx=".4"/>
+        <rect x="4" y="3" width="2.5" height="8" rx=".4"/>
+        <rect x="8" y="1" width="2.5" height="10" rx=".4"/>
+        <rect x="12" y="0" width="2.5" height="11" rx=".4" opacity=".25"/>
+      </svg>
+      <svg width="21" height="11" viewBox="0 0 21 11" fill="none">
+        <rect x=".5" y=".5" width="17" height="10" rx="1.8" stroke="var(--dark)" stroke-width="1"/>
+        <rect x="1.5" y="1.5" width="14" height="8" rx="1" fill="var(--dark)"/>
+        <rect x="18.2" y="3.5" width="1.8" height="4" rx=".9" fill="var(--dark)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ── SCREEN CONTAINER ── -->
+  <div id="sc">
+
+    <!-- ══ S1: PERSONA SELECTOR ══ -->
+    <div id="s1" class="scr on">
+      <div class="s1-wrap">
+        <div class="s1-head">
+          <div class="wm">
+            <span class="wm-w" style="font-size:25px">WTF</span>
+            <span class="wm-f">What the<br>Fertility</span>
+          </div>
+          <div class="s1-hed">Where are you on<br>your journey?</div>
+          <div class="s1-sub">No account needed. Pick what fits — we'll show you what matters most right now.</div>
+        </div>
+
+        <div class="s1-cards">
+
+          <!-- Card A: Considering (dimmed) -->
+          <div class="pc dim">
+            <div class="pc-ill">
+              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="33" cy="33" r="33" fill="#F5E8C8"/>
+                <!-- afro hair -->
+                <ellipse cx="33" cy="22" rx="17" ry="15" fill="#2E1C0F"/>
+                <circle cx="18" cy="25" r="7" fill="#2E1C0F"/>
+                <circle cx="48" cy="25" r="7" fill="#2E1C0F"/>
+                <circle cx="12" cy="31" r="4" fill="#2E1C0F"/>
+                <circle cx="54" cy="31" r="4" fill="#2E1C0F"/>
+                <!-- face -->
+                <ellipse cx="33" cy="38" rx="12" ry="13" fill="#8B5E3C"/>
+                <!-- neck -->
+                <rect x="29" y="48" width="8" height="8" rx="2" fill="#8B5E3C"/>
+                <!-- shirt -->
+                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#C1440E" opacity=".55"/>
+                <!-- eyes -->
+                <circle cx="29" cy="36" r="1.4" fill="#1E0F08"/>
+                <circle cx="37" cy="36" r="1.4" fill="#1E0F08"/>
+                <!-- mouth - thoughtful -->
+                <path d="M29 43 Q33 45 37 43" stroke="#6B3E22" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pc-bd">
+              <div class="pc-tag">Considering</div>
+              <div class="pc-ttl">Should I freeze?</div>
+              <div class="pc-dsc">Exploring whether egg or embryo freezing is right for me</div>
+            </div>
+            <div class="cs-tag">Soon</div>
+          </div>
+
+          <!-- Card B: Getting started (ACTIVE) -->
+          <div class="pc live" onclick="go('s2')" role="button" aria-label="I'm in — what do I do? Select this option">
+            <div class="pc-ill">
+              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="33" cy="33" r="33" fill="#ECF1E8"/>
+                <!-- hair top -->
+                <ellipse cx="33" cy="19" rx="13" ry="9.5" fill="#2C1810"/>
+                <!-- long braids -->
+                <path d="M20 25 C17 34 16 47 19 57" stroke="#2C1810" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+                <path d="M46 25 C49 34 50 47 47 57" stroke="#2C1810" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+                <!-- braid texture -->
+                <path d="M20 30 C17.5 33 17 36 18 39" stroke="#1A0C06" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
+                <path d="M46 30 C48.5 33 49 36 48 39" stroke="#1A0C06" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
+                <!-- face -->
+                <ellipse cx="33" cy="36" rx="12" ry="14" fill="#C4936A"/>
+                <!-- neck -->
+                <rect x="29" y="48" width="8" height="8" rx="2" fill="#C4936A"/>
+                <!-- shirt -->
+                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#7A9268" opacity=".75"/>
+                <!-- eyes -->
+                <circle cx="29" cy="34" r="1.4" fill="#1E0F08"/>
+                <circle cx="37" cy="34" r="1.4" fill="#1E0F08"/>
+                <!-- smile -->
+                <path d="M27 42 Q33 47 39 42" stroke="#9A6840" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pc-bd">
+              <div class="pc-tag">Getting started</div>
+              <div class="pc-ttl">I'm in — what do I do?</div>
+              <div class="pc-dsc">I've decided to freeze but need help with next steps</div>
+            </div>
+            <span class="pc-arr">›</span>
+          </div>
+
+          <!-- Card C: In process (dimmed) -->
+          <div class="pc dim">
+            <div class="pc-ill">
+              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="33" cy="33" r="33" fill="#F5EBE5"/>
+                <!-- short tight curls -->
+                <circle cx="26" cy="21" r="6.5" fill="#4A3020"/>
+                <circle cx="33" cy="18" r="7.5" fill="#4A3020"/>
+                <circle cx="40" cy="21" r="6.5" fill="#4A3020"/>
+                <circle cx="22" cy="27" r="5" fill="#4A3020"/>
+                <circle cx="44" cy="27" r="5" fill="#4A3020"/>
+                <circle cx="29" cy="18" r="4" fill="#3A2415"/>
+                <circle cx="37" cy="17" r="4" fill="#3A2415"/>
+                <!-- face -->
+                <ellipse cx="33" cy="38" rx="12" ry="13" fill="#D9A882"/>
+                <!-- neck -->
+                <rect x="29" y="48" width="8" height="8" rx="2" fill="#D9A882"/>
+                <!-- shirt -->
+                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#7A9268" opacity=".55"/>
+                <!-- eyes -->
+                <circle cx="29" cy="36" r="1.4" fill="#1E0F08"/>
+                <circle cx="37" cy="36" r="1.4" fill="#1E0F08"/>
+                <!-- bright smile -->
+                <path d="M27 44 Q33 50 39 44" stroke="#B07840" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pc-bd">
+              <div class="pc-tag">In process</div>
+              <div class="pc-ttl">I'm doing it right now</div>
+              <div class="pc-dsc">Currently in stimulation, monitoring, or retrieval</div>
+            </div>
+            <div class="cs-tag">Soon</div>
+          </div>
+
+        </div><!-- s1-cards -->
+      </div><!-- s1-wrap -->
+    </div><!-- #s1 -->
+
+
+    <!-- ══ S2: EDITORIAL ══ -->
+    <div id="s2" class="scr">
+
+      <div class="ed-hd">
+        <button class="bk" onclick="go('s1')" aria-label="Back">←</button>
+        <div class="wm">
+          <span class="wm-w" style="font-size:20px">WTF</span>
+          <span class="wm-f">What the<br>Fertility</span>
+        </div>
+        <div style="width:32px"></div>
+      </div>
+
+      <div class="ed-scroll" id="edScroll">
+
+        <div class="ed-hero">
+          <div class="ed-pill">Getting started</div>
+          <div class="ed-ttl">I'm in — what<br>do I do?</div>
+          <div class="ed-lead">You've decided to freeze. That's the hard part. Here's what the community says about what comes next.</div>
+        </div>
+
+        <!-- Section 1: You Are Not Alone -->
+        <div class="ed-sec">
+          <div class="ed-lbl"><span>You are not alone</span></div>
+          <div class="ed-sttl">The part nobody tells you about going first</div>
+          <div class="ed-bdy">You've made a decision that a lot of women describe as one of the most empowering — and most overwhelming — of their lives. The paperwork, the acronyms, the injections, the costs: it's a lot to carry at once.<br><br>And it's completely normal to feel excited and terrified in the same breath. You're not behind. You're not doing it wrong. You're exactly where thousands of women have been before you — and they figured it out. So will you.</div>
+        </div>
+
+        <!-- Section 2: What They Were Afraid Of -->
+        <div class="ed-sec">
+          <div class="ed-lbl"><span>What they were afraid of</span></div>
+          <div class="ed-sttl">The questions women at this stage ask most</div>
+          <div class="fl">
+            <div class="fi">
+              <span class="fi-pct">68%</span>
+              <span class="fi-txt">Asked how painful the injections really are — and what the day-to-day physically feels like</span>
+            </div>
+            <div class="fi">
+              <span class="fi-pct">54%</span>
+              <span class="fi-txt">Worried about how their body would respond to stimulation — and what "poor response" actually means</span>
+            </div>
+            <div class="fi">
+              <span class="fi-pct">49%</span>
+              <span class="fi-txt">Weren't sure how to find the right clinic or doctor, or what questions to even ask</span>
+            </div>
+            <div class="fi">
+              <span class="fi-pct">41%</span>
+              <span class="fi-txt">Felt overwhelmed by cost and uncertain what insurance would actually cover</span>
+            </div>
+            <div class="fi">
+              <span class="fi-pct">37%</span>
+              <span class="fi-txt">Scared of getting disappointing results after going through the whole process</span>
+            </div>
+            <div class="fi">
+              <span class="fi-pct">29%</span>
+              <span class="fi-txt">Worried about the logistics of doing it alone — appointments, injections, the emotional weight</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: What Actually Happened -->
+        <div class="ed-sec">
+          <div class="ed-lbl"><span>What actually happened</span></div>
+          <div class="ed-sttl">How it went for women who did it</div>
+          <div class="oi">
+            <div class="oi-stat">78%</div>
+            <div class="oi-txt">Said the injections were more manageable than they expected before starting</div>
+          </div>
+          <div class="oi">
+            <div class="oi-stat">71%</div>
+            <div class="oi-txt">Said the hardest part emotionally was the waiting — not the physical process</div>
+          </div>
+          <div class="oi">
+            <div class="oi-stat">63%</div>
+            <div class="oi-txt">Consulted more than one clinic before deciding — and said it was worth the extra time</div>
+          </div>
+          <div class="oi">
+            <div class="oi-stat">10–14 days</div>
+            <div class="oi-txt">The typical stimulation window from first injection to retrieval, across most protocols</div>
+          </div>
+        </div>
+
+        <!-- Section 4: What They Wish They'd Known -->
+        <div class="ed-sec">
+          <div class="ed-lbl"><span>What they wish they'd known</span></div>
+          <div class="ed-sttl">The things nobody puts in the brochure</div>
+          <div class="wb">
+            <div class="wb-txt">"Ask about the monitoring schedule before you commit to a clinic. How early? How often? That logistics question matters more than most people realize until they're in it."</div>
+          </div>
+          <div class="wb">
+            <div class="wb-txt">"Talk to your insurance before your first appointment — not after. The conversation is less scary than you think, and it changes everything about what you plan for."</div>
+          </div>
+          <div class="wb">
+            <div class="wb-txt">"Give yourself permission to tell someone. The secrecy is isolating — and for most women, the people they told were more supportive than they expected."</div>
+          </div>
+          <div class="ed-bdy" style="margin-top:13px">And more than anything: women said they wished they'd started the process sooner — not because of age alone, but because it takes more time and energy than the brochure suggests.</div>
+        </div>
+
+      </div><!-- ed-scroll -->
+
+      <!-- Sticky CTA -->
+      <div class="sc-ft">
+        <button class="tk-btn" onclick="go('s3')">Talk to WTF →</button>
+      </div>
+
+    </div><!-- #s2 -->
+
+
+    <!-- ══ S3: CHAT ORIENTATION ══ -->
+    <div id="s3" class="scr">
+      <div class="ori-wrap">
+
+        <button class="ori-bk" onclick="go('s2')">← Back</button>
+
+        <div class="ori-ic">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M20 2H4C2.9 2 2 2.9 2 4v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="#C1440E" opacity=".65"/>
+            <circle cx="8" cy="10" r="1.1" fill="white"/>
+            <circle cx="12" cy="10" r="1.1" fill="white"/>
+            <circle cx="16" cy="10" r="1.1" fill="white"/>
+          </svg>
+        </div>
+
+        <div class="ori-hed">Before we talk</div>
+        <div class="ori-bdy">WTF is grounded in real community experience — thousands of women who've been through this process and talked about it openly. Here's what that means for our conversation:</div>
+
+        <div class="ori-rules">
+          <div class="ori-rule">
+            <div class="ori-dot"></div>
+            <div class="ori-rt">Everything here comes from the community — how real women described their experiences, what they worried about, and what they found out. Not a doctor. Not a study.</div>
+          </div>
+          <div class="ori-rule">
+            <div class="ori-dot"></div>
+            <div class="ori-rt">You'll get patterns and percentages — not personal recommendations. Your specific situation belongs in a conversation with your RE.</div>
+          </div>
+          <div class="ori-rule">
+            <div class="ori-dot"></div>
+            <div class="ori-rt">Nothing you ask here is stored, judged, or shared. This is just for you.</div>
+          </div>
+        </div>
+
+        <button class="ori-cta" onclick="go('s4')">I understand — let's talk</button>
+        <div class="ori-priv">🔒 No account needed &nbsp;·&nbsp; No data stored &nbsp;·&nbsp; Just you</div>
+
+      </div>
+    </div><!-- #s3 -->
+
+
+    <!-- ══ S4: CHAT ══ -->
+    <div id="s4" class="scr">
+
+      <div class="ch-hd">
+        <button class="bk" onclick="go('s3')" aria-label="Back">←</button>
+        <div class="ch-av">W</div>
+        <div class="ch-inf">
+          <div class="ch-nm">WTF</div>
+          <div class="ch-st">Community grounded · Not medical advice</div>
+        </div>
+      </div>
+
+      <div class="ch-msgs" id="msgs">
+        <div class="msg b">
+          <div class="msg-row">
+            <div class="m-av">W</div>
+            <div class="m-bbl">Everyone's exact journey is different. Where are you and what's top of mind?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ch-chips" id="chips">
+        <div class="chip" onclick="sc(this,'Where do I start?')">Where do I start?</div>
+        <div class="chip" onclick="sc(this,'How painful is it really?')">How painful is it?</div>
+        <div class="chip" onclick="sc(this,'What does it cost?')">What does it cost?</div>
+        <div class="chip" onclick="sc(this,'How do I pick a clinic?')">Pick a clinic?</div>
+      </div>
+
+      <div class="ch-in">
+        <input class="ch-inp" id="inp" type="text" placeholder="Ask anything about the process…"
+               onkeydown="if(event.key==='Enter')sm()">
+        <button class="snd-btn" onclick="sm()" aria-label="Send">
+          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+
+    </div><!-- #s4 -->
+
+  </div><!-- #sc -->
+</div><!-- #phone -->
+
+<script>
+const RESP = {
+  'Where do I start?':
+    "The community is pretty united on this: start with your baseline bloodwork. Most women book a consultation with an REI (reproductive endocrinologist) — or their OB-GYN — to get AMH and AFC tested first. It tells you where your ovarian reserve stands and helps your doctor recommend a protocol.\n\nA lot of women said they wished they'd made that first appointment sooner. It felt scary, but it ended up being the most clarifying step.",
+
+  'How painful is it really?':
+    "Honest answer from the community: more manageable than most women expected. Daily injections are usually described as a quick pinch — uncomfortable, not excruciating.\n\nThe bloating and fullness from stimulation, especially in the last few days, was what more women flagged as genuinely uncomfortable. The retrieval is done under sedation, so most women didn't feel it. The day or two after can feel crampy and tender.",
+
+  'What does it cost?':
+    "One of the most-asked questions. Without insurance, most women reported $10,000–$15,000 per cycle, plus medications running another $3,000–$5,000 separately.\n\nMany had partial coverage through employer platforms like Progyny or Carrot. The advice that came up most consistently: call your insurance before you do anything else. Coverage varies wildly, and knowing your situation early changes your whole plan.",
+
+  'How do I pick a clinic?':
+    "The community has strong opinions here. SART success rate data is a starting point — but how a clinic communicates during the process matters just as much.\n\nWomen mentioned responsiveness, clear billing upfront, and monitoring appointment structure as underrated factors. Most women consulted 2–3 clinics before deciding. If a clinic is dismissive or vague about costs in the first consultation, that's usually a sign.",
+
+  'How many eggs do I need?':
+    "The most common question in the community — and genuinely hard to answer cleanly, because it depends on age, egg quality, and whether you want eggs vs. embryos.\n\nWomen in their early-to-mid 30s most often talked about aiming for 10–20 mature eggs, but the right number looked different for everyone. This is a conversation to have directly with your RE once you have your baseline numbers in hand.",
+
+  'What should I ask my doctor?':
+    "The community built a solid list from experience. What came up most:\n\n· What do my AMH and AFC mean for my protocol?\n· How many cycles do you think I'll likely need?\n· What does monitoring look like — how early, how often?\n· What's in the base price vs. what's extra?\n· What happens if I respond poorly to stimulation?\n\nNot being afraid to ask about money upfront saved a lot of stress later.",
+
+  'How long does it take?':
+    "From first appointment to retrieval, most women said to plan for 4–6 weeks total. The stimulation phase itself is typically 10–14 days of daily injections.\n\nWhat many didn't anticipate: the time between deciding to go forward and actually starting can be longer than expected — especially if insurance requires prior auth or your cycle timing doesn't align right away."
+};
+
+const PHASE2 = [
+  'How many eggs do I need?',
+  'What should I ask my doctor?',
+  'How long does it take?'
+];
+
+let phase = 0, busy = false;
+
+function go(id) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  const el = document.getElementById(id);
+  el.classList.add('on');
+  if (id === 's4') {
+    setTimeout(() => {
+      const m = document.getElementById('msgs');
+      m.scrollTop = m.scrollHeight;
+    }, 50);
+  }
+}
+
+function addMsg(role, txt) {
+  const c = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  const escaped = txt.replace(/\n/g, '<br>');
+  if (role === 'b') {
+    d.innerHTML = `<div class="msg-row"><div class="m-av">W</div><div class="m-bbl">${escaped}</div></div>`;
+  } else {
+    d.innerHTML = `<div class="msg-row"><div class="m-bbl">${escaped}</div></div>`;
+  }
+  c.appendChild(d);
+  setTimeout(() => { c.scrollTop = c.scrollHeight; }, 30);
+}
+
+function showTyping() {
+  const c = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg b'; d.id = 'typing';
+  d.innerHTML = `<div class="t-row"><div class="m-av">W</div><div class="t-bbl"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  c.appendChild(d);
+  setTimeout(() => { c.scrollTop = c.scrollHeight; }, 30);
+}
+
+function rmTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function updateChips() {
+  if (phase >= 1) {
+    const el = document.getElementById('chips');
+    el.innerHTML = PHASE2.map(t =>
+      `<div class="chip" onclick="sc(this,'${t}')">${t}</div>`
+    ).join('');
+  }
+}
+
+function sc(el, txt) {
+  if (busy) return;
+  el.classList.add('used');
+  handle(txt);
+}
+
+function sm() {
+  const inp = document.getElementById('inp');
+  const v = inp.value.trim();
+  if (!v || busy) return;
+  inp.value = '';
+  handle(v);
+}
+
+function handle(txt) {
+  busy = true;
+  addMsg('u', txt);
+  showTyping();
+  const rep = RESP[txt] ||
+    "That comes up in the community too. The honest answer is it really depends on your situation — your numbers, your clinic, your protocol. Tell me a bit more about where you are and I can share what women in similar situations have said.";
+  const delay = 1100 + Math.random() * 700;
+  setTimeout(() => {
+    rmTyping();
+    addMsg('b', rep);
+    phase++;
+    updateChips();
+    busy = false;
+  }, delay);
+}
+</script>
+</body>
+</html>

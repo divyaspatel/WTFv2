@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WTF — What the Fertility</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="phone">
+
+  <!-- Status bar -->
+  <div id="sb">
+    <span class="sb-t">9:41</span>
+    <div class="sb-ic">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="var(--dark)">
+        <rect x="0" y="5" width="2.5" height="6" rx=".4"/>
+        <rect x="4" y="3" width="2.5" height="8" rx=".4"/>
+        <rect x="8" y="1" width="2.5" height="10" rx=".4"/>
+        <rect x="12" y="0" width="2.5" height="11" rx=".4" opacity=".25"/>
+      </svg>
+      <svg width="21" height="11" viewBox="0 0 21 11" fill="none">
+        <rect x=".5" y=".5" width="17" height="10" rx="1.8" stroke="var(--dark)" stroke-width="1"/>
+        <rect x="1.5" y="1.5" width="14" height="8" rx="1" fill="var(--dark)"/>
+        <rect x="18.2" y="3.5" width="1.8" height="4" rx=".9" fill="var(--dark)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Screen container -->
+  <div id="sc">
+
+    <!-- S1: Persona selector -->
+    <div id="s1" class="scr on">
+      <div class="s1-wrap">
+        <div class="s1-head">
+          <div class="wm">
+            <span class="wm-w" style="font-size:25px">WTF</span>
+            <span class="wm-f">What the<br>Fertility</span>
+          </div>
+          <div class="s1-hed">Where are you on<br>your journey?</div>
+          <div class="s1-sub">No account needed. Pick what fits — we'll show you what matters most right now.</div>
+        </div>
+
+        <div class="s1-cards">
+
+          <!-- Considering (coming soon) -->
+          <div class="pc dim" aria-disabled="true">
+            <div class="pc-ill">
+              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="33" cy="33" r="33" fill="#F5E8C8"/>
+                <ellipse cx="33" cy="22" rx="17" ry="15" fill="#2E1C0F"/>
+                <circle cx="18" cy="25" r="7" fill="#2E1C0F"/>
+                <circle cx="48" cy="25" r="7" fill="#2E1C0F"/>
+                <circle cx="12" cy="31" r="4" fill="#2E1C0F"/>
+                <circle cx="54" cy="31" r="4" fill="#2E1C0F"/>
+                <ellipse cx="33" cy="38" rx="12" ry="13" fill="#8B5E3C"/>
+                <rect x="29" y="48" width="8" height="8" rx="2" fill="#8B5E3C"/>
+                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#C1440E" opacity=".55"/>
+                <circle cx="29" cy="36" r="1.4" fill="#1E0F08"/>
+                <circle cx="37" cy="36" r="1.4" fill="#1E0F08"/>
+                <path d="M29 43 Q33 45 37 43" stroke="#6B3E22" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pc-bd">
+              <div class="pc-tag">Considering</div>
+              <div class="pc-ttl">Should I freeze?</div>
+              <div class="pc-dsc">Exploring whether egg or embryo freezing is right for me</div>
+            </div>
+            <div class="cs-tag">Soon</div>
+          </div>
+
+          <!-- Active / getting started (live) -->
+          <div class="pc live" id="card-active" role="button" tabindex="0" aria-label="I'm in — what do I do?">
+            <div class="pc-ill">
+              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="33" cy="33" r="33" fill="#ECF1E8"/>
+                <ellipse cx="33" cy="19" rx="13" ry="9.5" fill="#2C1810"/>
+                <path d="M20 25 C17 34 16 47 19 57" stroke="#2C1810" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+                <path d="M46 25 C49 34 50 47 47 57" stroke="#2C1810" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+                <path d="M20 30 C17.5 33 17 36 18 39" stroke="#1A0C06" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
+                <path d="M46 30 C48.5 33 49 36 48 39" stroke="#1A0C06" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
+                <ellipse cx="33" cy="36" rx="12" ry="14" fill="#C4936A"/>
+                <rect x="29" y="48" width="8" height="8" rx="2" fill="#C4936A"/>
+                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#7A9268" opacity=".75"/>
+                <circle cx="29" cy="34" r="1.4" fill="#1E0F08"/>
+                <circle cx="37" cy="34" r="1.4" fill="#1E0F08"/>
+                <path d="M27 42 Q33 47 39 42" stroke="#9A6840" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pc-bd">
+              <div class="pc-tag">Getting started</div>
+              <div class="pc-ttl">I'm in — what do I do?</div>
+              <div class="pc-dsc">I've decided to freeze but need help with next steps</div>
+            </div>
+            <span class="pc-arr">›</span>
+          </div>
+
+          <!-- In process (coming soon) -->
+          <div class="pc dim" aria-disabled="true">
+            <div class="pc-ill">
+              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="33" cy="33" r="33" fill="#F5EBE5"/>
+                <circle cx="26" cy="21" r="6.5" fill="#4A3020"/>
+                <circle cx="33" cy="18" r="7.5" fill="#4A3020"/>
+                <circle cx="40" cy="21" r="6.5" fill="#4A3020"/>
+                <circle cx="22" cy="27" r="5" fill="#4A3020"/>
+                <circle cx="44" cy="27" r="5" fill="#4A3020"/>
+                <circle cx="29" cy="18" r="4" fill="#3A2415"/>
+                <circle cx="37" cy="17" r="4" fill="#3A2415"/>
+                <ellipse cx="33" cy="38" rx="12" ry="13" fill="#D9A882"/>
+                <rect x="29" y="48" width="8" height="8" rx="2" fill="#D9A882"/>
+                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#7A9268" opacity=".55"/>
+                <circle cx="29" cy="36" r="1.4" fill="#1E0F08"/>
+                <circle cx="37" cy="36" r="1.4" fill="#1E0F08"/>
+                <path d="M27 44 Q33 50 39 44" stroke="#B07840" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="pc-bd">
+              <div class="pc-tag">In process</div>
+              <div class="pc-ttl">I'm doing it right now</div>
+              <div class="pc-dsc">Currently in stimulation, monitoring, or retrieval</div>
+            </div>
+            <div class="cs-tag">Soon</div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- #s1 -->
+
+
+    <!-- S2: Editorial column -->
+    <div id="s2" class="scr">
+      <div class="ed-hd">
+        <button class="bk" id="ed-back" aria-label="Back">←</button>
+        <div class="wm">
+          <span class="wm-w" style="font-size:20px">WTF</span>
+          <span class="wm-f">What the<br>Fertility</span>
+        </div>
+        <div style="width:32px"></div>
+      </div>
+
+      <div class="ed-scroll" id="edScroll">
+        <!-- populated by app.js renderEditorial() -->
+      </div>
+
+      <div class="sc-ft">
+        <button class="tk-btn" id="talk-btn">Talk to WTF →</button>
+      </div>
+    </div><!-- #s2 -->
+
+
+    <!-- S3: Chat orientation -->
+    <div id="s3" class="scr">
+      <div class="ori-wrap">
+        <button class="ori-bk" id="ori-back">← Back</button>
+
+        <div class="ori-ic">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M20 2H4C2.9 2 2 2.9 2 4v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="#C1440E" opacity=".65"/>
+            <circle cx="8" cy="10" r="1.1" fill="white"/>
+            <circle cx="12" cy="10" r="1.1" fill="white"/>
+            <circle cx="16" cy="10" r="1.1" fill="white"/>
+          </svg>
+        </div>
+
+        <div class="ori-hed">Before we talk</div>
+        <div class="ori-bdy">WTF is grounded in real community experience — thousands of women who've been through this process and talked about it openly. Here's what that means for our conversation:</div>
+
+        <div class="ori-rules">
+          <div class="ori-rule">
+            <div class="ori-dot"></div>
+            <div class="ori-rt">Everything here comes from the community — how real women described their experiences, what they worried about, and what they found out. Not a doctor. Not a study.</div>
+          </div>
+          <div class="ori-rule">
+            <div class="ori-dot"></div>
+            <div class="ori-rt">You'll get patterns and percentages — not personal recommendations. Your specific situation belongs in a conversation with your RE.</div>
+          </div>
+          <div class="ori-rule">
+            <div class="ori-dot"></div>
+            <div class="ori-rt">Nothing you ask here is stored, judged, or shared. This is just for you.</div>
+          </div>
+        </div>
+
+        <button class="ori-cta" id="ori-cta">I understand — let's talk</button>
+        <div class="ori-priv">🔒 No account needed &nbsp;·&nbsp; No data stored &nbsp;·&nbsp; Just you</div>
+      </div>
+    </div><!-- #s3 -->
+
+
+    <!-- S4: Chat -->
+    <div id="s4" class="scr">
+      <div class="ch-hd">
+        <button class="bk" id="chat-back" aria-label="Back">←</button>
+        <div class="ch-av">W</div>
+        <div class="ch-inf">
+          <div class="ch-nm">WTF</div>
+          <div class="ch-st">Community grounded · Not medical advice</div>
+        </div>
+      </div>
+
+      <div class="ch-msgs" id="msgs">
+        <div class="msg b">
+          <div class="msg-row">
+            <div class="m-av">W</div>
+            <div class="m-bbl">Everyone's exact journey is different. Where are you and what's top of mind?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ch-chips" id="chips"></div>
+
+      <div class="ch-in">
+        <input class="ch-inp" id="inp" type="text" placeholder="Ask anything about the process…" autocomplete="off">
+        <button class="snd-btn" id="snd-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div><!-- #s4 -->
+
+  </div><!-- #sc -->
+</div><!-- #phone -->
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
