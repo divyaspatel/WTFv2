@@ -70,9 +70,8 @@ Deno.serve(async (req) => {
   );
   const { data: posts, error } = await supabase.rpc('match_posts', {
     query_embedding: embedding,
-    match_threshold: 0.75,
     match_count: 8,
-    stage_filter: null,
+    filter_subreddit: null,
   });
   if (error) throw error;
 
@@ -85,7 +84,7 @@ Deno.serve(async (req) => {
   }
 
   // 4. Stream Anthropic response
-  const context = posts.map((p: { content: string }) => p.content).join('\n\n');
+  const context = posts.map((p: { chunk_text: string }) => p.chunk_text).join('\n\n');
   const messages = [...(history ?? []), { role: 'user', content: message }];
 
   const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
