@@ -214,7 +214,8 @@ WTFv2/
 ├── index.html                  ← all 4 screens (S1–S4), loads app.js as module
 ├── styles.css                  ← all design tokens + component styles
 ├── app.js                      ← navigation, renderEditorial(); imports chat.js
-├── chat.js                     ← RAG chat: embed → match_posts → Anthropic stream
+├── chat.js                     ← calls Edge Function; no API keys in client bundle
+├── supabase/functions/wtf-chat/index.ts  ← embed → match_posts → Anthropic stream
 ├── editorial_content.js        ← static editorial JSON, all 3 personas
 ├── WTFv2_Design_Prototype.html ← full UI prototype (reference only)
 ├── PRD_MVP.md                  ← product spec and decisions
@@ -243,16 +244,40 @@ Shown on chat load, cleared after first message:
 
 ---
 
+## Edge Function: wtf-chat
+
+All API calls (OpenAI embed → Supabase match_posts → Anthropic stream) run in
+`supabase/functions/wtf-chat/index.ts`. The client only calls the Edge Function.
+
+**Deploy the Edge Function:**
+```bash
+supabase login
+supabase link --project-ref agsxcnxfsawplkieochk
+supabase secrets set OPENAI_API_KEY=sk-...  ANTHROPIC_API_KEY=sk-ant-...
+supabase functions deploy wtf-chat
+```
+
+**Supabase auto-injects:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — do not set these manually.
+
+Edge Function URL: `${VITE_SUPABASE_URL}/functions/v1/wtf-chat`
+
+---
+
 ## Env Vars
 
+**Client (safe to embed in Vite bundle — both are designed to be public):**
 ```
 VITE_SUPABASE_URL         Supabase project URL
-VITE_SUPABASE_ANON_KEY    Supabase anon key (public-safe)
-VITE_OPENAI_API_KEY       OpenAI key — embeddings only (text-embedding-ada-002)
-VITE_ANTHROPIC_API_KEY    Anthropic key — chat only (claude-sonnet-4-6)
+VITE_SUPABASE_ANON_KEY    Supabase anon key
 ```
 
-> Both API keys are exposed in the Vite bundle. Acceptable for MVP/private use only. Before any public deployment, move both behind Supabase Edge Functions and remove from client env.
+**Edge Function secrets only (set via `supabase secrets set`, never in .env):**
+```
+OPENAI_API_KEY            text-embedding-ada-002
+ANTHROPIC_API_KEY         claude-sonnet-4-6
+```
+
+> The `.env` file may still hold all four keys for reference, but only the two VITE_ vars are read by client code. OpenAI and Anthropic keys are never embedded in the bundle.
 
 ---
 
