@@ -69,6 +69,25 @@ Stage is passed as `context` to the chatbot system prompt and used to filter `ma
 
 ---
 
+## Embeddings
+
+Used to embed the user's query at chat time before calling `match_posts`.
+
+| Field | Value |
+|---|---|
+| Endpoint | `https://api.openai.com/v1/embeddings` |
+| Model | `text-embedding-ada-002` |
+| Dimensions | 1536 — must match vector column in `posts` table |
+| Auth header | `Authorization: Bearer ${VITE_OPENAI_API_KEY}` |
+
+Request shape:
+```json
+{ "input": "<user query>", "model": "text-embedding-ada-002" }
+```
+Response: `data[0].embedding` — float array of length 1536.
+
+---
+
 ## Supabase: `match_posts` Function
 
 pgvector similarity search over Reddit posts. Call this to retrieve relevant community context for the chatbot.
@@ -175,8 +194,8 @@ Do not skip steps or build out of order:
 
 1. ✅ Persona selector — static
 2. ✅ Editorial column — manually seeded via `editorial_content.js`
-3. ⬜ RAG wiring — `match_posts` pgvector retrieval into live chatbot
-4. ⬜ Chatbot with persona-aware system prompt — after RAG only
+3. ✅ RAG wiring — embed → `match_posts` → Anthropic streaming in `chat.js`
+4. ✅ Chatbot with persona-aware system prompt — live in `chat.js`
 5. ⬜ Persona-aware filtering — persist `stage` to posts table; filter retrieval
 
 **Do not ship the chatbot without RAG wired.** If RAG is not ready, surface chatbot as "coming soon."
@@ -193,7 +212,8 @@ WTFv2/
 ├── package.json                ← "dev": "vite" — run npm run dev to start
 ├── index.html                  ← all 4 screens (S1–S4), loads app.js as module
 ├── styles.css                  ← all design tokens + component styles
-├── app.js                      ← navigation, renderEditorial(), chat logic
+├── app.js                      ← navigation, renderEditorial(); imports chat.js
+├── chat.js                     ← RAG chat: embed → match_posts → Anthropic stream
 ├── editorial_content.js        ← static editorial JSON, all 3 personas
 ├── WTFv2_Design_Prototype.html ← full UI prototype (reference only)
 ├── PRD_MVP.md                  ← product spec and decisions
@@ -204,15 +224,27 @@ WTFv2/
 
 ---
 
+## Chat Starter Chips (S4)
+
+Shown on chat load, cleared after first message:
+```
+'Where do I even start?'
+'How painful are the injections?'
+'What does it actually cost?'
+```
+
+---
+
 ## Env Vars
 
 ```
 VITE_SUPABASE_URL         Supabase project URL
 VITE_SUPABASE_ANON_KEY    Supabase anon key (public-safe)
-VITE_ANTHROPIC_API_KEY    Anthropic API key — DO NOT expose client-side in prod
+VITE_OPENAI_API_KEY       OpenAI key — embeddings only (text-embedding-ada-002)
+VITE_ANTHROPIC_API_KEY    Anthropic key — chat only (claude-sonnet-4-6)
 ```
 
-> The Anthropic key must move to a server-side function (Supabase Edge Function or equivalent) before any public deployment. Never ship it in a Vite bundle.
+> Both API keys are exposed in the Vite bundle. Acceptable for MVP/private use only. Before any public deployment, move both behind Supabase Edge Functions and remove from client env.
 
 ---
 
