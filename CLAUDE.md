@@ -224,12 +224,20 @@ WTFv2/
 
 **To run locally:** `npm install && npm run dev`
 
-**To deploy to GitHub Pages:** `npm run deploy`
-- Builds with Vite (keys are embedded from local `.env` at build time)
-- Pushes `dist/` to the `gh-pages` branch via the `gh-pages` package
-- First deploy: go to repo Settings → Pages → set Source to **`gh-pages` branch**
-- Live URL: `https://divyaspatel.github.io/WTFv2/`
-- ⚠️ Run deploy locally only — never in CI, because `.env` keys must not be added to GitHub Secrets
+**To deploy to GitHub Pages:** push to `main` — GitHub Actions handles it automatically.
+
+One-time setup (do this once in the GitHub repo UI):
+1. Settings → Secrets and variables → Actions → add two repository secrets:
+   - `VITE_SUPABASE_URL` = your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY` = your Supabase anon key
+2. Settings → Pages → set Source to **GitHub Actions**
+
+After that, every push to `main` triggers `.github/workflows/deploy.yml`:
+builds with Vite (env vars injected from secrets), uploads `dist/` directly to
+Pages infrastructure via `actions/deploy-pages` — nothing is committed to git,
+so GitHub's secret scanner never sees the built bundle.
+
+Live URL: `https://divyaspatel.github.io/WTFv2/`
 
 ---
 
