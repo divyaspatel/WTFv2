@@ -464,3 +464,26 @@ html, body {
   transition: background .14s;
 }
 .snd-btn:hover { background: #A83A0C; }
+
+
+/* ════════════════════════════════════
+   MOBILE — full-screen on real devices
+   Desktop keeps the phone-frame chrome
+════════════════════════════════════ */
+@media (max-width: 430px) {
+  html, body {
+    padding: 0;
+    background: var(--cream);
+    align-items: stretch;
+  }
+
+  #phone {
+    width: 100%;
+    height: 100dvh; /* dvh tracks browser chrome on mobile */
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* hide the fake iOS status bar — real device has its own */
+  #sb { display: none; }
+}

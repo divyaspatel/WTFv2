@@ -209,7 +209,8 @@ WTFv2/
 ├── CLAUDE.md                   ← you are here — read first every session
 ├── .env                        ← gitignored, never commit
 ├── .gitignore
-├── package.json                ← "dev": "vite" — run npm run dev to start
+├── package.json                ← scripts: dev, build, deploy (gh-pages)
+├── vite.config.js              ← base: '/WTFv2/' for GitHub Pages asset paths
 ├── index.html                  ← all 4 screens (S1–S4), loads app.js as module
 ├── styles.css                  ← all design tokens + component styles
 ├── app.js                      ← navigation, renderEditorial(); imports chat.js
@@ -221,6 +222,13 @@ WTFv2/
 ```
 
 **To run locally:** `npm install && npm run dev`
+
+**To deploy to GitHub Pages:** `npm run deploy`
+- Builds with Vite (keys are embedded from local `.env` at build time)
+- Pushes `dist/` to the `gh-pages` branch via the `gh-pages` package
+- First deploy: go to repo Settings → Pages → set Source to **`gh-pages` branch**
+- Live URL: `https://divyaspatel.github.io/WTFv2/`
+- ⚠️ Run deploy locally only — never in CI, because `.env` keys must not be added to GitHub Secrets
 
 ---
 
