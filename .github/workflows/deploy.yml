@@ -33,8 +33,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Add these in: Settings → Secrets and variables → Actions → New repository secret
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          # Add in: Settings → Secrets and variables → Actions → New repository secret
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - uses: actions/upload-pages-artifact@v3
