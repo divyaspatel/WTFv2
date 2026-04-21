@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
   });
 
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = err instanceof Error ? err.message : JSON.stringify(err);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...CORS, 'Content-Type': 'application/json' },
