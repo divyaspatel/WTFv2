@@ -187,14 +187,20 @@ Do not skip steps or build out of order:
 
 ```
 WTFv2/
-├── CLAUDE.md                  ← you are here — read first every session
-├── .env                       ← gitignored, never commit
+├── CLAUDE.md                   ← you are here — read first every session
+├── .env                        ← gitignored, never commit
 ├── .gitignore
-├── editorial_content.js       ← static editorial JSON, all 3 personas
+├── package.json                ← "dev": "vite" — run npm run dev to start
+├── index.html                  ← all 4 screens (S1–S4), loads app.js as module
+├── styles.css                  ← all design tokens + component styles
+├── app.js                      ← navigation, renderEditorial(), chat logic
+├── editorial_content.js        ← static editorial JSON, all 3 personas
 ├── WTFv2_Design_Prototype.html ← full UI prototype (reference only)
-├── PRD_MVP.md                 ← product spec and decisions
-└── product_brainstorm.md      ← problem framing and decision log
+├── PRD_MVP.md                  ← product spec and decisions
+└── product_brainstorm.md       ← problem framing and decision log
 ```
+
+**To run locally:** `npm install && npm run dev`
 
 ---
 
