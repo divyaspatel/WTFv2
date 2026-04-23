@@ -128,13 +128,15 @@ html, body {
 .s0-bdy      { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--mid); line-height: 1.72; margin-bottom: 22px; display: flex; flex-direction: column; gap: 7px; }
 .s0-hook     { color: var(--dark); font-weight: 500; }
 
-.s0-learn    { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: var(--mid); letter-spacing: .09em; text-transform: uppercase; margin-bottom: 11px; }
+.s0-learn    { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--mid); margin-bottom: 11px; }
 
-.s0-list     { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.s0-list     { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-direction: column; gap: 9px; }
 .s0-list li  { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--dark); line-height: 1.5; padding-left: 18px; position: relative; }
 .s0-list li::before { content: '—'; position: absolute; left: 0; color: var(--tc); font-weight: 400; }
 
-.s0-foot     { padding-top: 28px; flex-shrink: 0; }
+.s0-tags     { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--mid); line-height: 1.5; }
+
+.s0-foot     { padding-top: 24px; flex-shrink: 0; }
 .s0-cta {
   width: 100%;
   padding: 14px;
@@ -156,6 +158,7 @@ html, body {
 .s0-cta:hover  { background: #A83A0C; }
 .s0-cta:active { transform: scale(.98); }
 
+.s0-social   { font-family: 'DM Sans', sans-serif; font-size: 11.5px; color: var(--mid); text-align: center; margin-bottom: 8px; font-weight: 500; }
 .s0-notice   { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--lt); line-height: 1.65; text-align: center; }
 .s0-link     { color: var(--tc); cursor: pointer; }
 
