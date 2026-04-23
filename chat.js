@@ -21,6 +21,40 @@ function esc(s) {
     .replace(/>/g, '&gt;');
 }
 
+function renderMarkdown(text) {
+  const lines = text.split('\n');
+  const out = [];
+  let inUl = false;
+  let inOl = false;
+
+  function inline(s) {
+    return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+  function closeUl() { if (inUl) { out.push('</ul>'); inUl = false; } }
+  function closeOl() { if (inOl) { out.push('</ol>'); inOl = false; } }
+
+  for (const line of lines) {
+    const ulMatch = line.match(/^[-*]\s+(.+)/);
+    const olMatch = line.match(/^\d+\.\s+(.+)/);
+    if (ulMatch) {
+      closeOl();
+      if (!inUl) { out.push('<ul>'); inUl = true; }
+      out.push(`<li>${inline(ulMatch[1])}</li>`);
+    } else if (olMatch) {
+      closeUl();
+      if (!inOl) { out.push('<ol>'); inOl = true; }
+      out.push(`<li>${inline(olMatch[1])}</li>`);
+    } else {
+      closeUl();
+      closeOl();
+      if (line.trim()) out.push(`${inline(line)}<br>`);
+    }
+  }
+  closeUl();
+  closeOl();
+  return out.join('').replace(/(<br>)+$/, '');
+}
+
 function scrollMsgs() {
   const el = document.getElementById('msgs');
   if (el) el.scrollTop = el.scrollHeight;
@@ -125,10 +159,10 @@ async function handle(text) {
           const evt = JSON.parse(payload);
           if (evt.type === 'fallback') {
             full = evt.text;
-            bubble.textContent = full;
+            bubble.innerHTML = renderMarkdown(full);
           } else if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
             full += evt.delta.text;
-            bubble.innerHTML = esc(full).replace(/\n/g, '<br>');
+            bubble.innerHTML = renderMarkdown(full);
             scrollMsgs();
           }
         } catch { /* skip malformed SSE line */ }

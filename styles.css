@@ -373,6 +373,8 @@ html, body {
 .m-bbl          { padding: 10px 13px; border-radius: 16px; font-size: 12.5px; line-height: 1.68; max-width: 224px; }
 .msg.u .m-bbl   { background: var(--tc); color: var(--wht); border-radius: 16px 16px 3px 16px; }
 .msg.b .m-bbl   { background: var(--wht); color: var(--dark); border: 1px solid var(--bdr); border-radius: 16px 16px 16px 3px; }
+.m-bbl ul, .m-bbl ol { padding-left: 15px; margin: 3px 0; }
+.m-bbl li       { margin: 3px 0; }
 
 /* Typing indicator */
 .t-row  { display: flex; align-items: center; gap: 6px; }
