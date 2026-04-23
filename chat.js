@@ -4,7 +4,7 @@
 
 // import.meta.env is Vite-specific — replaced at build time.
 // Guard with ?. so raw-browser serving fails gracefully instead of hard-crashing.
-const ANON_KEY = import.meta.env?.VITE_SUPABASE_ANON_KEY ?? '';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc3hjbnhmc2F3cGxraWVvY2hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MTA5NDUsImV4cCI6MjA4NzE4Njk0NX0.PGQMJv7fdRraBhatDIWp3s6qnksLxxDmPVsxr1bSOuw';
 const EDGE_URL = 'https://agsxcnxfsawplkieochk.supabase.co/functions/v1/wtf-chat';
 
 const STARTER_CHIPS = [
