@@ -106,6 +106,61 @@ html, body {
 
 
 /* ════════════════════════════════════
+   S0 — HOMEPAGE
+════════════════════════════════════ */
+.s0-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 36px 24px 28px;
+  overflow: hidden;
+}
+.s0-top { flex: 1; }
+
+.s0-brand    { margin-bottom: 26px; }
+.s0-wm-row   { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
+.s0-wm       { font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 500; color: var(--tc); line-height: 1; letter-spacing: -.02em; }
+.s0-beta     { background: var(--tcL); color: var(--tc); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; letter-spacing: .04em; align-self: flex-end; margin-bottom: 6px; }
+.s0-subtag   { font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--mid); font-weight: 400; }
+
+.s0-hed      { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 500; color: var(--dark); line-height: 1.3; margin-bottom: 14px; }
+
+.s0-bdy      { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--mid); line-height: 1.72; margin-bottom: 22px; display: flex; flex-direction: column; gap: 7px; }
+.s0-hook     { color: var(--dark); font-weight: 500; }
+
+.s0-learn    { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: var(--mid); letter-spacing: .09em; text-transform: uppercase; margin-bottom: 11px; }
+
+.s0-list     { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.s0-list li  { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--dark); line-height: 1.5; padding-left: 18px; position: relative; }
+.s0-list li::before { content: '—'; position: absolute; left: 0; color: var(--tc); font-weight: 400; }
+
+.s0-foot     { padding-top: 28px; flex-shrink: 0; }
+.s0-cta {
+  width: 100%;
+  padding: 14px;
+  background: var(--tc);
+  color: var(--wht);
+  border: none;
+  border-radius: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background .15s, transform .1s;
+  margin-bottom: 14px;
+}
+.s0-cta:hover  { background: #A83A0C; }
+.s0-cta:active { transform: scale(.98); }
+
+.s0-notice   { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--lt); line-height: 1.65; text-align: center; }
+.s0-link     { color: var(--tc); cursor: pointer; }
+
+
+/* ════════════════════════════════════
    S1 — PERSONA SELECTOR
 ════════════════════════════════════ */
 .s1-wrap { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }

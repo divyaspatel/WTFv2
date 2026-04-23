@@ -77,6 +77,9 @@ function init() {
   renderEditorial(currentStage);
   initChat(currentStage);
 
+  // S0: homepage CTA
+  document.getElementById('s0-cta').addEventListener('click', () => go('s1'));
+
   // S1: persona card
   const card = document.getElementById('card-active');
   card.addEventListener('click', () => go('s2'));
