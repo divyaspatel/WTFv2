@@ -417,12 +417,10 @@ async function logFeedback({ milestone, section, verdict, text }) {
         'Prefer': 'return=minimal',
       },
       body: JSON.stringify({
-        user_session_id: SESSION_ID,
-        screen: 'journey',
-        milestone,
-        section,
         verdict,
         optional_text: text || null,
+        milestone,
+        section,
       }),
     });
   } catch { /* fail silently */ }
