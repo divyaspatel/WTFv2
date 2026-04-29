@@ -1,17 +1,8 @@
 // chat.js — RAG chat via Supabase Edge Function (wtf-chat)
-// Client only needs VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY.
-// OpenAI and Anthropic keys live in the Edge Function environment only.
+// All API calls run server-side. Client only needs VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY.
 
-// import.meta.env is Vite-specific — replaced at build time.
-// Guard with ?. so raw-browser serving fails gracefully instead of hard-crashing.
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc3hjbnhmc2F3cGxraWVvY2hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MTA5NDUsImV4cCI6MjA4NzE4Njk0NX0.PGQMJv7fdRraBhatDIWp3s6qnksLxxDmPVsxr1bSOuw';
 const EDGE_URL = 'https://agsxcnxfsawplkieochk.supabase.co/functions/v1/wtf-chat';
-
-const STARTER_CHIPS = [
-  'Where do I even start?',
-  'How painful are the injections?',
-  'What does it actually cost?',
-];
 
 // ── DOM helpers ───────────────────────────────────────────────────────────────
 function esc(s) {
@@ -55,54 +46,65 @@ function renderMarkdown(text) {
   return out.join('').replace(/(<br>)+$/, '');
 }
 
-function scrollMsgs() {
-  const el = document.getElementById('msgs');
+function getDockMsgs()  { return document.getElementById('dock-msgs'); }
+function getDockEmpty() { return document.getElementById('dock-empty'); }
+
+function scrollDock() {
+  const el = getDockMsgs();
   if (el) el.scrollTop = el.scrollHeight;
 }
 
+function showMessages() {
+  getDockMsgs().classList.add('has-msgs');
+  const empty = getDockEmpty();
+  if (empty) empty.classList.add('hidden');
+}
+
 function appendUserBubble(text) {
-  const msgs = document.getElementById('msgs');
+  showMessages();
+  const msgs = getDockMsgs();
   const div = document.createElement('div');
   div.className = 'msg u';
   div.innerHTML = `<div class="msg-row"><div class="m-bbl">${esc(text)}</div></div>`;
   msgs.appendChild(div);
-  scrollMsgs();
+  scrollDock();
 }
 
 function appendBotBubble() {
-  const msgs = document.getElementById('msgs');
+  const msgs = getDockMsgs();
   const div = document.createElement('div');
   div.className = 'msg b';
   const id = `bubble-${Date.now()}`;
   div.innerHTML = `<div class="msg-row"><div class="m-av">W</div><div class="m-bbl" id="${id}"></div></div>`;
   msgs.appendChild(div);
-  scrollMsgs();
+  scrollDock();
   return document.getElementById(id);
 }
 
 function showTyping() {
-  const msgs = document.getElementById('msgs');
+  const msgs = getDockMsgs();
   const div = document.createElement('div');
   div.className = 'msg b';
   div.id = 'typing-indicator';
   div.innerHTML = `<div class="t-row"><div class="m-av">W</div><div class="t-bbl"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
   msgs.appendChild(div);
-  scrollMsgs();
+  scrollDock();
 }
 
 function removeTyping() {
   document.getElementById('typing-indicator')?.remove();
 }
 
-function setChips(chips) {
-  const el = document.getElementById('chips');
+// ── Dock chips ────────────────────────────────────────────────────────────────
+export function setDockChips(chips) {
+  const el = document.getElementById('dock-chips');
+  if (!el) return;
   el.innerHTML = chips.map(t =>
-    `<div class="chip" data-prompt="${esc(t)}">${esc(t)}</div>`
+    `<div class="dock-chip" data-prompt="${esc(t)}">${esc(t)}</div>`
   ).join('');
-  el.querySelectorAll('.chip').forEach(c =>
+  el.querySelectorAll('.dock-chip').forEach(c =>
     c.addEventListener('click', () => {
       if (busy) return;
-      c.classList.add('used');
       handle(c.dataset.prompt);
     })
   );
@@ -111,14 +113,13 @@ function setChips(chips) {
 // ── State ─────────────────────────────────────────────────────────────────────
 let busy = false;
 let stage = 'active';
-const history = []; // { role: 'user'|'assistant', content: string }
+const history = [];
 
 // ── Core handler ──────────────────────────────────────────────────────────────
 async function handle(text) {
   if (busy || !text.trim()) return;
   busy = true;
 
-  document.getElementById('chips').innerHTML = '';
   appendUserBubble(text);
   showTyping();
 
@@ -132,13 +133,12 @@ async function handle(text) {
       body: JSON.stringify({ message: text, stage, history }),
     });
 
-    if (!res.ok) throw new Error(`Edge function ${res.status}: ${await res.text()}`);
+    if (!res.ok) throw new Error(`Edge fn ${res.status}: ${await res.text()}`);
 
     removeTyping();
     const bubble = appendBotBubble();
     let full = '';
 
-    // Parse SSE stream (Anthropic format, plus our fallback event)
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buf = '';
@@ -163,7 +163,7 @@ async function handle(text) {
           } else if (evt.type === 'content_block_delta' && evt.delta?.type === 'text_delta') {
             full += evt.delta.text;
             bubble.innerHTML = renderMarkdown(full);
-            scrollMsgs();
+            scrollDock();
           }
         } catch { /* skip malformed SSE line */ }
       }
@@ -174,21 +174,19 @@ async function handle(text) {
   } catch (err) {
     removeTyping();
     const bubble = appendBotBubble();
-    const msg = 'Something went wrong — try again in a moment.';
-    bubble.textContent = msg;
+    bubble.textContent = 'Something went wrong — try again in a moment.';
     console.error('[chat]', err);
   }
 
   busy = false;
 }
 
-// ── Init (called from app.js) ─────────────────────────────────────────────────
-export function initChat(initialStage = 'active') {
+// ── Init ──────────────────────────────────────────────────────────────────────
+export function initDockChat(initialStage = 'active') {
   stage = initialStage;
-  setChips(STARTER_CHIPS);
 
-  const inp = document.getElementById('inp');
-  const snd = document.getElementById('snd-btn');
+  const inp = document.getElementById('dock-inp');
+  const snd = document.getElementById('dock-snd');
 
   function submit() {
     const val = inp.value.trim();

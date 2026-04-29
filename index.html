@@ -176,10 +176,10 @@
     </div><!-- #s1 -->
 
 
-    <!-- S2: Editorial column -->
+    <!-- S2: Credibility Bridge ("You're not alone") -->
     <div id="s2" class="scr">
-      <div class="ed-hd">
-        <button class="bk" id="ed-back" aria-label="Back">←</button>
+      <div class="cb-hd">
+        <button class="bk" id="cb-back" aria-label="Back">←</button>
         <div class="wm">
           <span class="wm-w" style="font-size:20px">WTF</span>
           <span class="wm-f">What the<br>Fertility</span>
@@ -187,83 +187,178 @@
         <div style="width:32px"></div>
       </div>
 
-      <div class="ed-scroll" id="edScroll">
-        <!-- populated by app.js renderEditorial() -->
-      </div>
+      <div class="cb-scroll">
 
-      <div class="sc-ft">
-        <button class="tk-btn" id="talk-btn">Talk it through →</button>
+        <!-- 1. Opener -->
+        <div class="cb-opener">
+          <h1 class="cb-hed">You've made the decision — and you're not alone.</h1>
+          <p class="cb-sub">Here's what thousands of women before you said about this exact moment.</p>
+        </div>
+
+        <!-- 2. Fear → Reality pairs -->
+        <div class="cb-sec">
+          <div class="cb-sec-hd"><span>What they feared → what actually happened</span></div>
+          <div class="fr-list">
+
+            <div class="fr-card">
+              <div class="fr-col">
+                <div class="fr-tag">Feared</div>
+                <div class="fr-body"><strong>68%</strong> asked how painful the injections really are</div>
+              </div>
+              <div class="fr-arr">→</div>
+              <div class="fr-col">
+                <div class="fr-tag">Reality</div>
+                <div class="fr-body"><strong>78%</strong> said it was more manageable than expected</div>
+              </div>
+            </div>
+
+            <div class="fr-card">
+              <div class="fr-col">
+                <div class="fr-tag">Feared</div>
+                <div class="fr-body"><strong>49%</strong> didn't know how to find the right clinic</div>
+              </div>
+              <div class="fr-arr">→</div>
+              <div class="fr-col">
+                <div class="fr-tag">Reality</div>
+                <div class="fr-body"><strong>63%</strong> consulted more than one — and said it was worth it</div>
+              </div>
+            </div>
+
+            <div class="fr-card">
+              <div class="fr-col">
+                <div class="fr-tag">Feared</div>
+                <div class="fr-body"><strong>29%</strong> worried about the emotional weight</div>
+              </div>
+              <div class="fr-arr">→</div>
+              <div class="fr-col">
+                <div class="fr-tag">Reality</div>
+                <div class="fr-body"><strong>71%</strong> said the waiting was harder than the physical part</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 3. By the numbers -->
+        <div class="cb-sec">
+          <div class="cb-sec-hd"><span>The community's journey, by the numbers</span></div>
+          <div class="num-grid">
+            <div class="num-card">
+              <div class="num-val">10–14</div>
+              <div class="num-desc">days of stimulation, first injection to retrieval</div>
+            </div>
+            <div class="num-card">
+              <div class="num-val">2.1</div>
+              <div class="num-desc">average rounds for women in their early 30s</div>
+            </div>
+            <div class="num-card">
+              <div class="num-val">~$12K</div>
+              <div class="num-desc">median out-of-pocket per cycle, excl. meds</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Bridge card -->
+        <div class="cb-sec cb-sec-last">
+          <div class="bridge-card">
+            <h3 class="bridge-hed">This is the surface. Your journey goes deeper.</h3>
+            <p class="bridge-bdy">What you just read came from 2,000+ conversations with women who've been where you are. Next, we'll walk it step by step — and at every step, you'll see what they wish they'd known.</p>
+            <div class="bridge-strip">
+              <div class="bs-step">Prep</div>
+              <div class="bs-arr">→</div>
+              <div class="bs-step">Cycle</div>
+              <div class="bs-arr">→</div>
+              <div class="bs-step">After</div>
+            </div>
+            <ul class="bridge-list">
+              <li>Questions to ask your medical provider</li>
+              <li>What women wish they'd known</li>
+              <li>Resources for this stage</li>
+              <li>Ask the community anything</li>
+            </ul>
+            <button class="cb-cta" id="cb-cta">Start your journey →</button>
+          </div>
+        </div>
+
       </div>
     </div><!-- #s2 -->
 
 
-    <!-- S3: Chat orientation -->
+    <!-- S3: Journey Milestones -->
     <div id="s3" class="scr">
-      <div class="ori-wrap">
-        <button class="ori-bk" id="ori-back">← Back</button>
 
-        <div class="ori-ic">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M20 2H4C2.9 2 2 2.9 2 4v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="#C1440E" opacity=".65"/>
-            <circle cx="8" cy="10" r="1.1" fill="white"/>
-            <circle cx="12" cy="10" r="1.1" fill="white"/>
-            <circle cx="16" cy="10" r="1.1" fill="white"/>
+      <!-- Dim overlay shown when dock is expanded -->
+      <div class="jn-overlay" id="jn-overlay"></div>
+
+      <!-- Nav header -->
+      <div class="jn-hd">
+        <button class="bk" id="jn-back" aria-label="Back">←</button>
+        <div class="wm">
+          <span class="wm-w" style="font-size:20px">WTF</span>
+          <span class="wm-f">What the<br>Fertility</span>
+        </div>
+        <div style="width:32px"></div>
+      </div>
+
+      <!-- Page header -->
+      <div class="jn-phdr">
+        <h2 class="jn-title">Egg freezing pathways</h2>
+        <p class="jn-sub">Common paths real women took — distilled into steps and decisions you'll actually face.</p>
+      </div>
+
+      <!-- Milestone strip -->
+      <div class="ms-strip-wrap">
+        <div class="ms-strip" id="ms-strip">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+
+      <!-- Milestone panel (scrollable) -->
+      <div class="ms-panel" id="ms-panel">
+        <!-- Populated by app.js -->
+      </div>
+
+      <!-- Persistent chat dock -->
+      <div class="dock" id="dock">
+
+        <div class="dock-pill" id="dock-pill">
+          <div class="dock-av">W</div>
+          <div class="dock-info">
+            <div class="dock-label">Ask the community anything</div>
+            <div class="dock-sub">Answers drawn from 2,000+ real conversations</div>
+          </div>
+          <svg class="dock-caret-up" width="12" height="7" viewBox="0 0 12 7" fill="none">
+            <path d="M1 6L6 1L11 6" stroke="var(--mid)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
 
-        <div class="ori-hed">Before we talk</div>
-        <div class="ori-bdy">WTF is grounded in real community experience — thousands of women who've been through this process and talked about it openly. Here's what that means for our conversation:</div>
-
-        <div class="ori-rules">
-          <div class="ori-rule">
-            <div class="ori-dot"></div>
-            <div class="ori-rt">Everything here comes from the community — how real women described their experiences, what they worried about, and what they found out. Not a doctor. Not a study.</div>
+        <div class="dock-panel" id="dock-panel">
+          <div class="dock-phdr" id="dock-close">
+            <div class="dock-av">W</div>
+            <div class="dock-info">
+              <div class="dock-label">Ask the community</div>
+              <div class="dock-sub">Answers drawn from 2,000+ real conversations</div>
+            </div>
+            <svg class="dock-caret-dn" width="12" height="7" viewBox="0 0 12 7" fill="none">
+              <path d="M1 1L6 6L11 1" stroke="var(--mid)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
-          <div class="ori-rule">
-            <div class="ori-dot"></div>
-            <div class="ori-rt">You'll get patterns and percentages — not personal recommendations. Your specific situation belongs in a conversation with your RE.</div>
+          <div class="dock-msgs" id="dock-msgs"></div>
+          <div class="dock-empty" id="dock-empty">
+            <div class="dock-empty-lbl">Common questions at this stage</div>
+            <div class="dock-chips" id="dock-chips"></div>
           </div>
-          <div class="ori-rule">
-            <div class="ori-dot"></div>
-            <div class="ori-rt">Nothing you ask here is stored, judged, or shared. This is just for you.</div>
+          <div class="dock-in">
+            <input class="dock-inp" id="dock-inp" type="text" placeholder="Ask anything about the process…" autocomplete="off">
+            <button class="dock-snd" id="dock-snd" aria-label="Send">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+            </button>
           </div>
         </div>
 
-        <button class="ori-cta" id="ori-cta">I understand — let's talk</button>
-        <div class="ori-priv">🔒 No account needed &nbsp;·&nbsp; No data stored &nbsp;·&nbsp; Just you</div>
       </div>
+
     </div><!-- #s3 -->
-
-
-    <!-- S4: Chat -->
-    <div id="s4" class="scr">
-      <div class="ch-hd">
-        <button class="bk" id="chat-back" aria-label="Back">←</button>
-        <div class="ch-av">W</div>
-        <div class="ch-inf">
-          <div class="ch-nm">WTF</div>
-          <div class="ch-st">Community grounded · Not medical advice</div>
-        </div>
-      </div>
-
-      <div class="ch-msgs" id="msgs">
-        <div class="msg b">
-          <div class="msg-row">
-            <div class="m-av">W</div>
-            <div class="m-bbl">Everyone's exact journey is different. Where are you and what's top of mind?</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ch-chips" id="chips"></div>
-
-      <div class="ch-in">
-        <input class="ch-inp" id="inp" type="text" placeholder="Ask anything about the process…" autocomplete="off">
-        <button class="snd-btn" id="snd-btn" aria-label="Send">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="white"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-        </button>
-      </div>
-    </div><!-- #s4 -->
 
   </div><!-- #sc -->
 </div><!-- #phone -->
