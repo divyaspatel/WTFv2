@@ -11,10 +11,11 @@ const SESSION_ID = (() => {
   return id;
 })();
 
-// ── Milestone data (stub content — real content from Supabase pipeline later) ─
+// ── Milestone data (static fallback — overwritten by loadMilestoneInsights) ───
 const MILESTONES = [
   {
     id: 'testing',
+    dbId: 'initial_testing',
     label: 'TEST',
     name: 'Initial Fertility Testing',
     description: 'Baseline bloodwork and scans that show where you\'re starting from.',
@@ -41,6 +42,7 @@ const MILESTONES = [
   },
   {
     id: 'consult',
+    dbId: 're_consult',
     label: 'CONS',
     name: 'RE Consultation',
     description: 'Choosing a clinic, meeting your RE, and understanding your protocol.',
@@ -67,6 +69,7 @@ const MILESTONES = [
   },
   {
     id: 'stims',
+    dbId: 'stim_start',
     label: 'STIM',
     name: 'Stim Start',
     description: 'Beginning injections and what the first days of stimulation feel like.',
@@ -93,6 +96,7 @@ const MILESTONES = [
   },
   {
     id: 'monitoring',
+    dbId: 'monitoring',
     label: 'MONT',
     name: 'Monitoring',
     description: 'Frequent ultrasounds and bloodwork to track follicle growth.',
@@ -119,6 +123,7 @@ const MILESTONES = [
   },
   {
     id: 'retrieval',
+    dbId: 'trigger_retrieval',
     label: 'RETR',
     name: 'Trigger & Retrieval',
     description: 'The trigger shot, procedure day, and immediate recovery.',
@@ -145,6 +150,7 @@ const MILESTONES = [
   },
   {
     id: 'eggsfrozen',
+    dbId: 'eggs_frozen',
     label: 'EGGS',
     name: 'Eggs Frozen',
     description: 'Your final egg count, what maturity means, and storage next steps.',
@@ -171,6 +177,7 @@ const MILESTONES = [
   },
   {
     id: 'fertilization',
+    dbId: 'fertilization',
     label: 'FERT',
     name: 'Fertilization',
     description: 'Deciding to fertilize, ICSI vs. conventional IVF, and the first call.',
@@ -196,6 +203,7 @@ const MILESTONES = [
   },
   {
     id: 'embryodev',
+    dbId: 'embryo_development',
     label: 'EMBR',
     name: 'Embryo Development',
     description: 'Day 3 to Day 7 — watching embryos grow and what the updates mean.',
@@ -222,6 +230,7 @@ const MILESTONES = [
   },
   {
     id: 'pgta',
+    dbId: 'pgta',
     label: 'PGTA',
     name: 'PGT-A',
     description: 'Genetic testing — what it tells you, what it doesn\'t, and what mosaic means.',
@@ -247,6 +256,7 @@ const MILESTONES = [
   },
   {
     id: 'embryosfrozen',
+    dbId: 'embryos_frozen',
     label: 'DONE',
     name: 'Embryos Frozen',
     description: 'Your final embryo count, storage, and planning what comes next.',
@@ -272,6 +282,26 @@ const MILESTONES = [
     chips: ['How many embryos?', 'FET timeline?', 'Storage costs?', 'Another cycle?'],
   },
 ];
+
+// ── Load milestone insights from Supabase ─────────────────────────────────────
+async function loadMilestoneInsights() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/milestone_insights?select=id,questions,wisdom,resources`,
+      { headers: { 'apikey': ANON_KEY, 'Authorization': `Bearer ${ANON_KEY}` } }
+    );
+    if (!res.ok) return;
+    const rows = await res.json();
+    const byId = Object.fromEntries(rows.map(r => [r.id, r]));
+    MILESTONES.forEach(m => {
+      const row = byId[m.dbId];
+      if (!row) return;
+      if (row.questions?.length)  m.questions  = row.questions;
+      if (row.wisdom?.length)     m.wisdom     = row.wisdom.map(w => ({ quote: w.quote, count: w.source_count }));
+      if (row.resources?.length)  m.resources  = row.resources.map(r => ({ title: r.title, desc: r.description }));
+    });
+  } catch { /* fall back to static data */ }
+}
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let currentMilestone = 'testing';
@@ -550,6 +580,7 @@ function collapseDock() {
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 function init() {
+  loadMilestoneInsights();
   initDockChat('active');
 
   // Milestone panel — single delegated listener
