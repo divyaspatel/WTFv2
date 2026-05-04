@@ -1071,6 +1071,28 @@ html, body {
 }
 
 
+/* ── App wrapper (phone + footer stacked) ── */
+#app-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Page footer (below phone frame) ── */
+#page-footer {
+  margin-top: 16px;
+  text-align: center;
+}
+#whats-new-link {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--lt);
+  text-decoration: none;
+  letter-spacing: .02em;
+  transition: color .15s ease;
+}
+#whats-new-link:hover { color: var(--mid); }
+
 /* ════════════════════════════════════
    MOBILE
 ════════════════════════════════════ */

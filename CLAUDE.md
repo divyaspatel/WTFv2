@@ -3,6 +3,42 @@
 
 ---
 
+## How to Update the CHANGELOG
+
+At the end of every session that results in a meaningful git push, add a new entry to both `CHANGELOG.md` and `changelog_data.js`. Always update both files in the same commit.
+
+**Audience for CHANGELOG entries:** Product managers who are curious about building with AI but don't have time to build themselves. They should feel like they're building alongside you — understanding the trade-offs, not just reading a feature list.
+
+**Voice:** You are a PM building in public. Write like you're explaining a real decision to a peer. What was the problem? What options existed? What were you optimizing for? What levers could you actually pull? What was the final call and why? What surprised you or what would you do differently?
+
+**Entry structure:**
+
+```
+## Shipped [Month Day, Year] — [Short punchy title]
+
+**What changed for users:** [1-2 sentences, benefit-led]
+
+**User impact bullets:**
+- [Observable change from the user's perspective]
+- ...
+
+**Technical decisions:**
+[Decision / options / trade-offs / levers / final call / watch out for]
+
+**Blog URL:** *(coming soon)* or actual URL once published
+```
+
+**What does NOT belong in CHANGELOG.md:**
+- Hotfixes, config tweaks, and deploy one-liners (e.g. hardcoding a URL to fix a 401) — batch these into the nearest meaningful entry
+- Changes the user would never notice
+- Architectural details already documented elsewhere in CLAUDE.md
+
+**When to update CLAUDE.md vs CHANGELOG.md:**
+- CLAUDE.md updates only when something structural changes: new screen, new table, new API, new pattern established
+- CHANGELOG.md updates on every meaningful push — including changes that only affect user experience, not architecture
+
+---
+
 ## What This Is
 
 WTF (What the Fertility) is a web app helping women navigate fertility preservation for the first time. It's an editorial advice column grounded in Reddit community data (r/eggfreezing, r/IVF), with a RAG-powered chatbot. The editorial column delivers value with zero user input. The chatbot is unlocked after the editorial.

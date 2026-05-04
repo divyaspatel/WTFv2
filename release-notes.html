@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What's New — WTF</title>
+  <link rel="icon" type="image/svg+xml" href="/WTFv2/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream:  #F7F3EC;
+      --cream2: #EDE6D9;
+      --tc:     #C1440E;
+      --tcL:    #F5EBE5;
+      --sage:   #7A9268;
+      --sageL:  #ECF1E8;
+      --dark:   #2C2218;
+      --mid:    #7A6E65;
+      --lt:     #B0A69E;
+      --bdr:    #E2D9CE;
+      --wht:    #FFFFFF;
+    }
+
+    html, body {
+      background: var(--cream);
+      min-height: 100vh;
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      color: var(--dark);
+    }
+
+    /* ── Page layout ── */
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      margin-bottom: 48px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mid);
+      text-decoration: none;
+      margin-bottom: 32px;
+      transition: color .15s ease;
+    }
+    .back-link:hover { color: var(--tc); }
+    .back-link svg { flex-shrink: 0; }
+
+    .wordmark {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .wordmark-wtf {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 500;
+      font-size: 22px;
+      color: var(--tc);
+      letter-spacing: -.01em;
+      line-height: 1;
+    }
+    .wordmark-sub {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      color: var(--lt);
+      line-height: 1.3;
+    }
+
+    .page-hed {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 500;
+      font-size: 28px;
+      color: var(--dark);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .page-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--bdr);
+      margin-bottom: 32px;
+    }
+
+    /* ── Entry list ── */
+    .entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ── Entry card ── */
+    .entry {
+      background: var(--wht);
+      border: 1px solid var(--bdr);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: border-color .15s ease;
+    }
+    .entry:hover { border-color: var(--lt); }
+
+    /* ── Entry trigger (always visible) ── */
+    .entry-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .entry-trigger-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .entry-date {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 4px;
+    }
+
+    .entry-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 500;
+      font-size: 17px;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+
+    .entry-chevron {
+      flex-shrink: 0;
+      color: var(--lt);
+      transition: transform .2s ease, color .15s ease;
+    }
+    .entry.open .entry-chevron {
+      transform: rotate(180deg);
+      color: var(--mid);
+    }
+
+    /* ── Entry body (hidden until open) ── */
+    .entry-body {
+      display: none;
+      padding: 0 22px 22px;
+    }
+    .entry.open .entry-body { display: block; }
+
+    /* ── User section ── */
+    .user-section {
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--sageL);
+    }
+
+    .entry-summary {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--mid);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+
+    .entry-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .entry-bullets li {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--dark);
+      line-height: 1.55;
+      padding-left: 16px;
+      position: relative;
+    }
+    .entry-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--tc);
+      opacity: .6;
+    }
+
+    /* ── Blog link ── */
+    .blog-link-row {
+      margin-top: 14px;
+    }
+    .blog-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--tc);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity .15s ease;
+    }
+    .blog-link:hover { opacity: .75; }
+    .blog-coming-soon {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--lt);
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 400;
+    }
+
+    /* ── Builder's note ── */
+    .builders-section {
+      border-top: 1px solid var(--bdr);
+      padding-top: 14px;
+      margin-top: 4px;
+    }
+
+    .builders-trigger {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      text-align: left;
+      margin-bottom: 0;
+    }
+
+    .builders-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    .builders-chevron {
+      color: var(--lt);
+      transition: transform .2s ease;
+      flex-shrink: 0;
+    }
+    .builders-section.open .builders-chevron { transform: rotate(180deg); }
+
+    .builders-body {
+      display: none;
+      padding-top: 14px;
+    }
+    .builders-section.open .builders-body { display: block; }
+
+    .builders-body p {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--mid);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .builders-body p:last-child { margin-bottom: 0; }
+    .builders-body strong { color: var(--dark); font-weight: 500; }
+    .builders-body em { font-style: italic; }
+    .builders-body code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      background: var(--cream2);
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: var(--tc);
+    }
+
+    /* ── Footer ── */
+    .page-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--bdr);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-brand {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--tc);
+    }
+    .footer-note {
+      font-size: 12px;
+      color: var(--lt);
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="page-header">
+    <a href="index.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to WTF
+    </a>
+
+    <div class="wordmark">
+      <span class="wordmark-wtf">WTF</span>
+      <span class="wordmark-sub">What the Fertility</span>
+    </div>
+
+    <h1 class="page-hed">What's new</h1>
+    <p class="page-sub">Everything that's shipped, what it means for you, and the decisions behind it.</p>
+  </header>
+
+  <div class="divider"></div>
+
+  <div class="entry-list" id="entry-list">
+    <!-- Entries injected by JS -->
+  </div>
+
+  <footer class="page-footer">
+    <span class="footer-brand">WTF</span>
+    <span class="footer-note">Built in public by Divya Sriram Patel</span>
+  </footer>
+
+</div>
+
+<script type="module">
+// Update this array (and CHANGELOG.md) every time something ships.
+const CHANGELOG = [
+  {
+    date: "May 4, 2026",
+    title: "Real stories, finally",
+    userSummary: "The milestone cards throughout the journey map now show real wisdom, quotes, and patterns from women who've actually been through egg freezing — not placeholder text.",
+    userBullets: [
+      "Journey milestone cards show real community quotes and observed patterns",
+      "Each phase reflects what women at that exact stage said they wished they'd known",
+      "Content is AI-synthesized from the r/eggfreezing and r/IVF communities",
+    ],
+    buildersNote: `
+      <p><strong>The problem:</strong> The 10-phase journey milestones were built and live, but showing static placeholder content. I needed a pipeline to synthesize community insights and wire them to the UI.</p>
+      <p><strong>The levers:</strong> Two parameters controlled quality — <em>match threshold</em> (how similar a post needs to be to qualify) and <em>match count</em> (how many posts to pull per milestone). In real-time chat, you optimize all three: relevance, latency, and cost simultaneously. This is a batch job — it runs once, not per user request. Latency and cost effectively drop out. The only thing worth optimizing for is accuracy of the synthesis.</p>
+      <p><strong>The decision:</strong> <code>MATCH_THRESHOLD=0.65</code> (more permissive than the chat threshold of 0.75, to allow broader community context for synthesis) and <code>MATCH_COUNT=40</code>. Also built an ivfflat vector index on the posts table to keep similarity search fast as the dataset grows.</p>
+      <p><strong>Watch out for:</strong> If milestone content starts feeling generic or off-topic as the post corpus grows, tighten the threshold back toward 0.70–0.75. The sweet spot moves with the data.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "April 29, 2026",
+    title: "The full journey, in one view",
+    userSummary: "The app now shows you all 10 phases of the egg freezing journey before you start asking questions — from “Should I even do this?” all the way through “My results are in.”",
+    userBullets: [
+      "10-phase journey map replaces the previous editorial article format",
+      "Each phase is its own card: title, key questions women ask, and community wisdom",
+      "The chatbot is still accessible at any point — the map gives you context first",
+    ],
+    buildersNote: `
+      <p><strong>The pivot:</strong> The original editorial format was article-style — long, linear, easy to skim past. The goal was to surface the structure of the journey visually so users could orient themselves before asking questions. Two screens collapsed into a different UX pattern.</p>
+      <p><strong>Where the phases came from:</strong> 10 phases defined by how women on Reddit actually describe their experience — not clinical stages, but emotional and logistical milestones. The names and sequencing came from reading hundreds of posts, not from a medical framework. That distinction matters for tone.</p>
+      <p><strong>Supporting changes:</strong> Tightened the chatbot system prompt (cut filler, sharpened community-grounding instructions). Trimmed the feedback payload from a broad schema to just <code>verdict</code>, <code>optional_text</code>, <code>milestone</code>, and <code>section</code>.</p>
+      <p><strong>Watch out for:</strong> The 10-phase structure is a hypothesis. If users consistently ask questions that don't map to any phase, the phases need rewriting — not more prompting.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "April 23, 2026",
+    title: "A door worth opening",
+    userSummary: "WTF now has a proper front door — a homepage that explains what you're about to use and why you should trust it, before asking you to do anything. Chat responses also render as proper lists instead of raw asterisks.",
+    userBullets: [
+      "New homepage: what WTF is, why it exists, what you'll learn — before any persona selection",
+      "Chat now renders bullet and numbered lists cleanly instead of raw markdown symbols",
+      "Smoother first impression overall",
+    ],
+    buildersNote: `
+      <p><strong>The front door:</strong> Before this, the app opened directly to the persona selector — asking users to self-identify before they understood what the product was. S0 fixes that with a clear value prop and a single CTA.</p>
+      <p><strong>The Google OAuth mistake:</strong> The first version of S0 had a Google sign-in button — added speculatively because "you'll probably want auth eventually." Removed it two days later. The friction wasn't justified, and it was solving a problem that doesn't exist yet. Classic premature feature. The lesson: build for the user you have, not the one you imagine you'll have.</p>
+      <p><strong>Markdown rendering:</strong> The Anthropic API returns formatted responses with bullet lists, but the chat UI was rendering them as raw text. Added a lightweight markdown parser — handles bold, bullets, numbered lists, and line breaks. No external library; ~30 lines of JS. Minimal by design: if the chatbot starts using patterns that break it, it's cheaper to add a rule than to constrain the model.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "April 21, 2026",
+    title: "It goes public",
+    userSummary: "WTF is live at a real URL. The app is mobile-optimized and accessible from any phone without installing anything.",
+    userBullets: [
+      "Live at divyaspatel.github.io/WTFv2",
+      "Optimized for mobile screens",
+      "Chatbot connected to real community data",
+    ],
+    buildersNote: `
+      <p><strong>The deployment constraint that improved the architecture:</strong> The plan was to embed API keys in the Vite bundle and deploy to GitHub Pages. GitHub's secret scanner blocked the push. That forced moving all API calls into a Supabase Edge Function — the client calls only the Edge Function, no secrets in the bundle, ever.</p>
+      <p><strong>The upside:</strong> The Edge Function is the right architecture regardless. Stateless, runs at the edge, no backend server to maintain. Sometimes a blocker is pointing at a better path. Worth remembering.</p>
+      <p><strong>First-deploy chaos:</strong> Multiple hotfixes — missing CORS headers on Edge Function errors, Supabase URL not picked up from env vars on GitHub Pages, broken favicon path. Each fix was a one-liner; the pain was deploy cycle time. This is normal. The lesson is to not rush the first deploy — give yourself a day for the long tail of environment-specific issues.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "April 21, 2026",
+    title: "The community gets a voice",
+    userSummary: "The chatbot now draws its answers from real Reddit posts by women who've been through egg freezing. Every answer is grounded in actual community experience, not a model's training data.",
+    userBullets: [
+      "Every chatbot answer is grounded in real r/eggfreezing and r/IVF posts",
+      "Responses reflect actual patterns, not generic medical summaries",
+      "The chatbot knows its limits: if the community hasn't discussed something, it says so",
+    ],
+    buildersNote: `
+      <p><strong>The core differentiator, live:</strong> Retrieval-Augmented Generation — embed the user's query, find the most similar community posts via cosine similarity, inject those posts as context before the model generates a response. This is the whole product's reason for existing.</p>
+      <p><strong>Why OpenAI for embeddings, not Anthropic:</strong> Anthropic doesn't offer a standalone embedding API. <code>text-embedding-ada-002</code> (1536 dimensions) is the established standard for pgvector deployments. Two different providers is fine — the embedding model and the generation model don't need to be from the same company.</p>
+      <p><strong>The model split:</strong> Haiku for query augmentation (fast, cheap, just rewrites the query), Sonnet for the main chat response (quality matters here). Using the right model for the right job reduces cost without sacrificing output quality where it counts.</p>
+      <p><strong>The threshold is everything:</strong> <code>match_threshold=0.75</code> for chat. Too high and the chatbot falls back to "I don't have that" constantly. Too low and responses drift toward hallucination. Monitor fallback rate as a proxy for whether the threshold needs adjustment.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "April 21, 2026",
+    title: "The first draft",
+    userSummary: "WTF exists. You can pick your journey stage, read editorial content tailored to that stage, and see the chatbot interface — though the chat wasn't yet connected to anything real.",
+    userBullets: [
+      "Three-persona selector: Considering, Active, In-process",
+      "Editorial column: answers common questions at each stage with zero user input",
+      "Chat interface visible — static, not yet connected to community data",
+    ],
+    buildersNote: `
+      <p><strong>The foundational product decision:</strong> The chatbot is never the entry point. Editorial leads. Users read community-grounded content before they can ask questions. This was deliberate — people need to trust the source before they act on its answers. Reversing this order would produce a worse product even if the chatbot were perfect.</p>
+      <p><strong>Why no framework:</strong> Vite + vanilla JS. No React, no Vue. The app has four screens and minimal state — a framework adds build complexity and bundle size for no gain. This gets second-guessed regularly, but it's held up. Simpler is faster to ship.</p>
+      <p><strong>The persona model:</strong> Three stages (<code>considering</code>, <code>active</code>, <code>in_process</code>) map to meaningfully different user needs. The same question has a different best answer depending on where you are in the journey. Stage-awareness is baked in from day one, even though only "active" is live.</p>
+      <p><strong>Watch out for:</strong> "Considering" and "In-process" are marked coming soon. The three-card selector only pays off if those stages are eventually built. If they're never built, it's wasted real estate.</p>
+    `,
+    blogUrl: null,
+  },
+];
+
+const list = document.getElementById('entry-list');
+
+CHANGELOG.forEach((entry, i) => {
+  const card = document.createElement('div');
+  card.className = 'entry';
+
+  const blogRow = entry.blogUrl
+    ? `<a href="${entry.blogUrl}" class="blog-link" target="_blank" rel="noopener">
+        Read the full post
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <path d="M2 9L9 2M9 2H4M9 2V7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>`
+    : `<span class="blog-coming-soon">Coming soon</span>`;
+
+  card.innerHTML = `
+    <button class="entry-trigger" aria-expanded="false" data-index="${i}">
+      <div class="entry-trigger-text">
+        <div class="entry-date">Shipped ${entry.date}</div>
+        <div class="entry-title">${entry.title}</div>
+      </div>
+      <svg class="entry-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 5.5L8 10.5L13 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="entry-body">
+      <div class="user-section">
+        <div class="section-label">What changed for you</div>
+        <p class="entry-summary">${entry.userSummary}</p>
+        <ul class="entry-bullets">
+          ${entry.userBullets.map(b => `<li>${b}</li>`).join('')}
+        </ul>
+        <div class="blog-link-row">${blogRow}</div>
+      </div>
+
+      <div class="builders-section">
+        <button class="builders-trigger" aria-expanded="false">
+          <span class="builders-label">Builder's note</span>
+          <svg class="builders-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="builders-body">${entry.buildersNote}</div>
+      </div>
+    </div>
+  `;
+
+  // Entry expand/collapse
+  card.querySelector('.entry-trigger').addEventListener('click', () => {
+    const isOpen = card.classList.toggle('open');
+    card.querySelector('.entry-trigger').setAttribute('aria-expanded', isOpen);
+  });
+
+  // Builder's note expand/collapse (independent)
+  card.querySelector('.builders-trigger').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const section = card.querySelector('.builders-section');
+    const isOpen = section.classList.toggle('open');
+    card.querySelector('.builders-trigger').setAttribute('aria-expanded', isOpen);
+  });
+
+  list.appendChild(card);
+});
+</script>
+
+</body>
+</html>
