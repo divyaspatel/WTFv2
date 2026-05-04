@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "agent",
+            "if": "Bash(git push*)",
+            "timeout": 120,
+            "statusMessage": "Drafting changelog entry...",
+            "prompt": "A git push just completed. Draft a new CHANGELOG entry for what was just pushed.\n\nSteps:\n1. Run `git log -1 --format='%H %s %ad' --date=short` to get the latest commit info\n2. Run `git show HEAD --stat --format=''` to see which files changed\n3. Read CLAUDE.md to understand the project context and voice guidelines\n\nThen add a new entry using the PM-building-in-public voice:\n\n**Voice:** Write as a PM building in public. Audience = PMs curious about building with AI. Document the decision like you're explaining a real trade-off to a peer: what was the problem, what options existed, what was being optimized for, what levers were available, what the final call was.\n\n**Entry format for CHANGELOG.md** — prepend to the top (below the header block, above the first existing ## entry):\n```\n## Shipped [Month Day, Year] — [Short punchy title]\n\n**What changed for users:** [1-2 sentences, benefit-led]\n\n**User impact bullets:**\n- ...\n\n**Technical decisions:**\n[decision / options / trade-offs / levers / final call]\n\n[BUILDER'S NOTE: Replace this with what surprised you, what you'd do differently, the human story behind this decision.]\n\n**Blog URL:** *(coming soon)*\n\n---\n```\n\n**Entry format for release-notes.html** — prepend a new object to the TOP of the CHANGELOG array (before the first existing entry), matching the exact JS object structure already in the file:\n```js\n{\n  date: \"[Month Day, Year]\",\n  title: \"[Short punchy title]\",\n  userSummary: \"[1-2 sentences, benefit-led]\",\n  userBullets: [\n    \"...\",\n    \"...\",\n  ],\n  buildersNote: `\n    <p><strong>The decision:</strong> ...</p>\n    <p><strong>The options:</strong> ...</p>\n    <p><strong>The trade-off:</strong> ...</p>\n    <p><strong>Final call:</strong> ...</p>\n    <p><em>[BUILDER'S NOTE: Replace with the human story — what surprised you, what you'd do differently.]</em></p>\n  `,\n  blogUrl: null,\n},\n```\n\nUpdate both files now. Do not ask for confirmation — draft the best entry you can from the git diff, and leave the [BUILDER'S NOTE] placeholder clearly marked for the human to fill in."
+          }
+        ]
+      }
+    ]
+  }
+}
