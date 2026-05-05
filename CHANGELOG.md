@@ -13,6 +13,32 @@
 
 ---
 
+## Shipped May 4, 2026 — No more phone frame
+
+**What changed for users:** The app now fills your actual screen — whether you're on your phone, tablet, or desktop browser. No more tiny cutout in the middle of the page.
+
+**User impact bullets:**
+- On mobile: the app uses your full screen, exactly like any native app would
+- On desktop: content centers in a clean 560px column — no phone-shaped box, no gray surround
+- "What's new →" link now appears on all devices, not just desktop
+- All content is reachable by scrolling — nothing is clipped or hidden off-screen
+
+**Technical decisions:**
+
+*The problem:* The original UI wrapped everything in a `#phone` div — literally 375×790px with rounded corners, drop shadow, and a fake status bar showing "9:41" and battery icon. The intent was to demonstrate the mobile-first design in a browser demo. The consequence was a broken product: fixed pixel dimensions clipped content, the footer lived outside the fake phone so it was invisible on real phones, and users opening the app on an actual device saw a redundant phone-within-a-phone.
+
+*What "mobile-first" actually means vs. what was built:* Mobile-first means your CSS defaults to mobile layout and scales up via media queries. It does not mean render a phone frame. These are completely different things. The frame was a demo artifact that shipped into production.
+
+*The fix:* Deleted the `#phone` wrapper, the fake status bar, and 88 lines of CSS. Replaced with `#app` — a proper flex column filling `100dvh`, centered at `max-width: 560px` on desktop, full-width on mobile. Moved the footer inside the app so it renders on all viewports. Fixed S0's scroll so content doesn't clip on short screens.
+
+*What to watch:* The 560px desktop max-width is a reading-comfort choice, not a constraint. If you ever want a two-column layout on wider screens, that's the next lever to pull.
+
+[BUILDER'S NOTE: Replace this with what surprised you, what you'd do differently, the human story behind this decision.]
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped May 4, 2026 — Real stories, finally
 
 **What changed for users:**

@@ -366,6 +366,24 @@
 const CHANGELOG = [
   {
     date: "May 4, 2026",
+    title: "No more phone frame",
+    userSummary: "The app now fills your actual screen — whether you're on your phone, tablet, or desktop browser. No more tiny cutout in the middle of the page.",
+    userBullets: [
+      "On mobile: the app uses your full screen, exactly like any native app would",
+      "On desktop: content centers in a clean column — no phone-shaped box, no gray surround",
+      "\"What's new →\" link now appears on all devices, not just desktop",
+      "All content is reachable by scrolling — nothing is clipped or hidden off-screen",
+    ],
+    buildersNote: `
+      <p><strong>The problem:</strong> The original UI wrapped everything in a <code>#phone</code> div — literally 375×790px with rounded corners, drop shadow, and a fake status bar showing "9:41" and a battery icon. The intent was to demonstrate the mobile-first design in a browser. The consequence was a broken product: fixed pixel dimensions clipped content, the footer lived outside the fake phone so it was invisible on real phones, and opening the app on an actual device meant seeing a phone-within-a-phone.</p>
+      <p><strong>Mobile-first ≠ phone frame:</strong> Mobile-first means your CSS defaults to mobile layout and scales up via media queries. It does not mean render a phone shape. These are completely different things. The frame was a demo artifact that shipped into production.</p>
+      <p><strong>The fix:</strong> Deleted the <code>#phone</code> wrapper, fake status bar, and 88 lines of CSS. Replaced with a proper <code>#app</code> flex column filling <code>100dvh</code>, centered at <code>max-width: 560px</code> on desktop, full-width on mobile. Moved the footer inside the app. Fixed S0 scroll so content doesn't clip on short screens.</p>
+      <p><em>[BUILDER'S NOTE: Replace with the human story — what surprised you, what you'd do differently.]</em></p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "May 4, 2026",
     title: "Real stories, finally",
     userSummary: "The milestone cards throughout the journey map now show real wisdom, quotes, and patterns from women who've actually been through egg freezing — not placeholder text.",
     userBullets: [
