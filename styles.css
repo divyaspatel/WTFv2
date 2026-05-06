@@ -109,11 +109,16 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 20px 24px 16px;
+  padding: 0 24px 0;
+  overflow: hidden;
+}
+.s0-top {
+  flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding-top: 20px;
+  padding-bottom: 8px;
 }
-.s0-top { flex-shrink: 0; }
 
 /* ── S0 hero illustration ── */
 .s0-hero-wrap {
@@ -147,7 +152,7 @@ html, body {
 
 .s0-tags     { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--mid); line-height: 1.5; }
 
-.s0-foot     { padding-top: 24px; flex-shrink: 0; }
+.s0-foot     { padding-top: 24px; padding-bottom: 16px; flex-shrink: 0; }
 .s0-cta {
   width: 100%;
   padding: 14px;
