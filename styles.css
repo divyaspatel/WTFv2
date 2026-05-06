@@ -115,6 +115,18 @@ html, body {
 }
 .s0-top { flex-shrink: 0; }
 
+/* ── S0 hero illustration ── */
+.s0-hero-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.s0-hero {
+  width: 72%;
+  max-width: 240px;
+  mix-blend-mode: multiply;
+}
+
 .s0-brand    { margin-bottom: 26px; }
 .s0-wm-row   { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
 .s0-wm       { font-family: 'Newsreader', Georgia, serif; font-size: 38px; font-weight: 500; color: var(--tc); line-height: 1; letter-spacing: -.02em; }
@@ -559,6 +571,18 @@ html, body {
 .ms-card-hdr {
   padding: 16px 16px 12px;
   border-bottom: 0.5px solid var(--bdr);
+}
+
+/* ── Milestone illustration ── */
+.ms-ill-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.ms-ill {
+  width: 60%;
+  max-width: 180px;
+  mix-blend-mode: multiply;
 }
 .ms-milestone-label {
   font-size: 9px;
@@ -1072,7 +1096,8 @@ html, body {
 /* ── Page footer ── */
 #page-footer {
   flex-shrink: 0;
-  padding: 10px 16px 14px;
+  padding: 16px 16px 32px;
+  padding-bottom: max(32px, env(safe-area-inset-bottom, 32px));
   text-align: center;
 }
 #whats-new-link {

@@ -1,5 +1,15 @@
 import { initDockChat, setDockChips } from './chat.js';
 
+// ── Illustration map (dbId → public asset filename) ───────────────────────────
+const BASE = import.meta.env.BASE_URL;
+const MILESTONE_ILLUSTRATIONS = {
+  initial_testing:   `${BASE}baseline.png`,
+  re_consult:        `${BASE}consultation.png`,
+  stim_start:        `${BASE}stims.png`,
+  trigger_retrieval: `${BASE}retrieval.png`,
+  eggs_frozen:       `${BASE}numbers.png`,
+};
+
 // ── Supabase config (anon key is public) ──────────────────────────────────────
 const SUPABASE_URL = 'https://agsxcnxfsawplkieochk.supabase.co';
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc3hjbnhmc2F3cGxraWVvY2hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MTA5NDUsImV4cCI6MjA4NzE4Njk0NX0.PGQMJv7fdRraBhatDIWp3s6qnksLxxDmPVsxr1bSOuw';
@@ -426,9 +436,15 @@ function renderMilestone(milestoneId) {
       </div>
     </div>`;
 
+  const illSrc = MILESTONE_ILLUSTRATIONS[m.dbId];
+  const illHtml = illSrc
+    ? `<div class="ms-ill-wrap"><img src="${illSrc}" class="ms-ill" alt=""></div>`
+    : '';
+
   document.getElementById('ms-panel').innerHTML = `
     <div class="ms-card">
       <div class="ms-card-hdr">
+        ${illHtml}
         <div class="ms-milestone-label${isFirst ? '' : ' inactive'}">
           ${isFirst ? 'Milestone 1 · You are here' : `Milestone ${idx + 1}`}
         </div>
