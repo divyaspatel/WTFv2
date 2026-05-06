@@ -109,7 +109,7 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 36px 24px 28px;
+  padding: 20px 24px 16px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -119,15 +119,17 @@ html, body {
 .s0-hero-wrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 .s0-hero {
-  width: 72%;
-  max-width: 240px;
+  width: 55%;
+  max-width: 180px;
+  max-height: 150px;
+  object-fit: contain;
   mix-blend-mode: multiply;
 }
 
-.s0-brand    { margin-bottom: 26px; }
+.s0-brand    { margin-bottom: 16px; }
 .s0-wm-row   { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
 .s0-wm       { font-family: 'Newsreader', Georgia, serif; font-size: 38px; font-weight: 500; color: var(--tc); line-height: 1; letter-spacing: -.02em; }
 .s0-beta     { background: var(--tcL); color: var(--tc); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; letter-spacing: .04em; align-self: flex-end; margin-bottom: 6px; }
