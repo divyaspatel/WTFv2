@@ -6,19 +6,41 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Design tokens ── */
+/* ── Design tokens — Serene Path ── */
 :root {
-  --cream:  #F7F3EC;
-  --cream2: #EDE6D9;
-  --tc:     #C1440E;
-  --tcL:    #F5EBE5;
+  /* Surfaces */
+  --cream:  #FFF8F5;
+  --cream2: #F5EBE5;
+  --wht:    #FFFFFF;
+
+  /* Brand */
+  --tc:     #B1431A;
+  --tcL:    #FFDBCF;
   --sage:   #7A9268;
   --sageL:  #ECF1E8;
-  --dark:   #2C2218;
-  --mid:    #7A6E65;
-  --lt:     #B0A69E;
-  --bdr:    #E2D9CE;
-  --wht:    #FFFFFF;
+
+  /* Text */
+  --dark:   #211A16;
+  --mid:    #52443D;
+  --lt:     #85736B;
+
+  /* Borders */
+  --bdr:    #D7C2B9;
+
+  /* Spacing scale */
+  --sp-xs:  4px;
+  --sp-sm:  8px;
+  --sp-md:  16px;
+  --sp-lg:  24px;
+  --sp-xl:  32px;
+  --sp-xxl: 48px;
+
+  /* Radius scale */
+  --r-sm:   4px;
+  --r-md:   8px;
+  --r-lg:   16px;
+  --r-xl:   28px;
+  --r-full: 9999px;
 }
 
 /* ── Page shell ── */
@@ -57,7 +79,7 @@ html, body {
 
 /* ── Wordmark ── */
 .wm      { display: flex; align-items: baseline; gap: 7px; }
-.wm-w    { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; color: var(--tc); letter-spacing: -.01em; line-height: 1; }
+.wm-w    { font-family: 'Newsreader', Georgia, serif; font-weight: 500; color: var(--tc); letter-spacing: -.01em; line-height: 1; }
 .wm-f    { font-size: 9px; font-weight: 400; letter-spacing: .11em; text-transform: uppercase; color: var(--lt); line-height: 1.3; }
 
 /* ── Back button ── */
@@ -95,11 +117,11 @@ html, body {
 
 .s0-brand    { margin-bottom: 26px; }
 .s0-wm-row   { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
-.s0-wm       { font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 500; color: var(--tc); line-height: 1; letter-spacing: -.02em; }
+.s0-wm       { font-family: 'Newsreader', Georgia, serif; font-size: 38px; font-weight: 500; color: var(--tc); line-height: 1; letter-spacing: -.02em; }
 .s0-beta     { background: var(--tcL); color: var(--tc); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; letter-spacing: .04em; align-self: flex-end; margin-bottom: 6px; }
 .s0-subtag   { font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--mid); font-weight: 400; }
 
-.s0-hed      { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 500; color: var(--dark); line-height: 1.3; margin-bottom: 14px; }
+.s0-hed      { font-family: 'Newsreader', Georgia, serif; font-size: 24px; font-weight: 500; color: var(--dark); line-height: 1.3; margin-bottom: 14px; }
 
 .s0-bdy      { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--mid); line-height: 1.72; margin-bottom: 22px; display: flex; flex-direction: column; gap: 7px; }
 
@@ -144,7 +166,7 @@ html, body {
 .s1-wrap  { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
 .s1-head  { padding: 22px 22px 16px; }
 .s1-hed   {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 22px;
   font-weight: 500;
   color: var(--dark);
@@ -189,7 +211,7 @@ html, body {
 .pc-ill  { width: 66px; height: 66px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
 .pc-bd   { flex: 1; }
 .pc-tag  { font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--tc); margin-bottom: 3px; }
-.pc-ttl  { font-family: 'Playfair Display', Georgia, serif; font-size: 14px; font-weight: 500; color: var(--dark); margin-bottom: 3px; line-height: 1.3; }
+.pc-ttl  { font-family: 'Newsreader', Georgia, serif; font-size: 14px; font-weight: 500; color: var(--dark); margin-bottom: 3px; line-height: 1.3; }
 .pc-dsc  { font-size: 11.5px; color: var(--mid); line-height: 1.45; }
 .pc-arr  { color: var(--tc); font-size: 20px; flex-shrink: 0; line-height: 1; }
 
@@ -219,7 +241,7 @@ html, body {
   border-bottom: 1px solid var(--bdr);
 }
 .cb-hed {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 22px;
   font-weight: 500;
   color: var(--dark);
@@ -311,7 +333,7 @@ html, body {
   padding: 12px 10px;
 }
 .num-val {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 20px;
   font-weight: 500;
   color: var(--tc);
@@ -332,7 +354,7 @@ html, body {
   padding: 18px 16px;
 }
 .bridge-hed {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 16px;
   font-weight: 500;
   color: var(--dark);
@@ -355,7 +377,7 @@ html, body {
   border-radius: 10px;
 }
 .bs-step {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 13px;
   font-weight: 500;
   color: var(--dark);
@@ -444,7 +466,7 @@ html, body {
   flex-shrink: 0;
 }
 .jn-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 20px;
   font-weight: 500;
   color: var(--dark);
@@ -548,7 +570,7 @@ html, body {
 }
 .ms-milestone-label.inactive { color: var(--mid); }
 .ms-milestone-name {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 17px;
   font-weight: 500;
   color: var(--dark);
@@ -685,7 +707,7 @@ html, body {
 .wisdom-item:last-child { border-bottom: none; }
 
 .wisdom-quote {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 12.5px;
   font-style: italic;
   color: var(--dark);
@@ -856,7 +878,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 11px;
   color: var(--tc);
   font-weight: 500;
@@ -1009,7 +1031,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Newsreader', Georgia, serif;
   font-size: 9px;
   color: var(--tc);
   font-weight: 500;

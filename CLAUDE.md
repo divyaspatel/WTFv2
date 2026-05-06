@@ -48,34 +48,53 @@ WTF (What the Fertility) is a web app helping women navigate fertility preservat
 
 ---
 
-## Design Tokens
+## Design Tokens — Serene Path
 
 ### Colors (CSS custom properties)
 ```css
---cream:   #F7F3EC   /* page background */
---cream2:  #EDE6D9   /* card background, outcome tiles */
---tc:      #C1440E   /* terracotta — primary brand, CTAs, links */
---tcL:     #F5EBE5   /* terracotta light — user bubbles bg, pill bg */
---sage:    #7A9268   /* secondary accent — section labels, "online" status */
---sageL:   #ECF1E8   /* sage light — section label rule line */
---dark:    #2C2218   /* primary text */
---mid:     #7A6E65   /* secondary text, descriptions */
---lt:      #B0A69E   /* tertiary text, placeholders */
---bdr:     #E2D9CE   /* borders, dividers */
---wht:     #FFFFFF   /* cards, chat bubbles */
+/* Surfaces */
+--cream:  #FFF8F5   /* page background */
+--cream2: #F5EBE5   /* card background, outcome tiles */
+--wht:    #FFFFFF   /* cards, chat bubbles */
+
+/* Brand */
+--tc:     #B1431A   /* terracotta — primary brand, CTAs, links */
+--tcL:    #FFDBCF   /* terracotta light — user bubbles bg, pill bg */
+--sage:   #7A9268   /* secondary accent — section labels, "online" status */
+--sageL:  #ECF1E8   /* sage light — section label rule line */
+
+/* Text */
+--dark:   #211A16   /* primary text */
+--mid:    #52443D   /* secondary text, descriptions */
+--lt:     #85736B   /* tertiary text, placeholders */
+
+/* Borders */
+--bdr:    #D7C2B9   /* borders, dividers */
 ```
 
 ### Typography
 ```
-Playfair Display — serif, headlines, stats, wordmark (Google Fonts)
-DM Sans — sans-serif, body, UI, buttons (Google Fonts)
+Newsreader — serif, headlines, wordmark (Google Fonts)
+DM Sans    — sans-serif, body, UI, buttons (Google Fonts)
 ```
 
 Font weight conventions:
-- Playfair: 400 (body/italic), 500 (headlines)
+- Newsreader: 400 (regular/italic), 500 (headlines)
 - DM Sans: 300 (light), 400 (body), 500 (medium/buttons)
 
-### Border Radius
+### Spacing scale (CSS custom properties)
+```css
+--sp-xs: 4px  --sp-sm: 8px  --sp-md: 16px
+--sp-lg: 24px  --sp-xl: 32px  --sp-xxl: 48px
+```
+
+### Radius scale (CSS custom properties)
+```css
+--r-sm: 4px   --r-md: 8px   --r-lg: 16px
+--r-xl: 28px  --r-full: 9999px
+```
+
+### Border Radius (existing components)
 - Cards: 18px
 - Buttons: 13px
 - Chips/pills: 18–20px
