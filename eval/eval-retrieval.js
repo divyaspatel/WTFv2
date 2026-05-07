@@ -13,7 +13,9 @@
  *   eval/results/YYYY-MM-DD_n<count>.csv
  *
  * Required in .env:
- *   VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY
+ *   VITE_SUPABASE_URL, VITE_SUPABASE_SERVICE_ROLE_KEY, VITE_OPENAI_API_KEY, VITE_ANTHROPIC_API_KEY
+ *
+ * VITE_SUPABASE_SERVICE_ROLE_KEY: Supabase dashboard → Settings → API → service_role
  */
 
 import { config } from 'dotenv';
@@ -28,23 +30,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 config({ path: path.resolve(__dirname, '..', '.env') });
 
 // ── Config ────────────────────────────────────────────────────────────────────
-// Match production values from supabase/functions/wtf-chat/index.ts exactly.
-// Change these to test a different configuration, then compare CSV outputs.
-const MATCH_COUNT = 8;   // chunks retrieved per query
-const PASS_BAR   = 6;   // minimum relevant chunks for a query to PASS (6/8 = 75%)
+// Change these to test different configurations, then compare CSV outputs.
+const MATCH_COUNT       = 8;     // chunks retrieved per query
+const MATCH_THRESHOLD   = 0.75;  // cosine similarity cutoff
+const PASS_BAR          = 6;     // minimum relevant chunks for a query to PASS (6/8 = 75%)
 const JUDGE_MODEL = 'claude-haiku-4-5-20251001';
 
 // ── Env validation ────────────────────────────────────────────────────────────
-const REQUIRED_VARS = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY', 'VITE_OPENAI_API_KEY', 'VITE_ANTHROPIC_API_KEY'];
+const REQUIRED_VARS = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_SERVICE_ROLE_KEY', 'VITE_OPENAI_API_KEY', 'VITE_ANTHROPIC_API_KEY'];
 const missing = REQUIRED_VARS.filter(k => !process.env[k]);
 if (missing.length) {
   console.error(`\nMissing required env vars: ${missing.join(', ')}`);
-  console.error('Check your .env file.\n');
+  console.error('\nVITE_SUPABASE_SERVICE_ROLE_KEY: Supabase dashboard → Settings → API → service_role\n');
   process.exit(1);
 }
 
 const SUPABASE_URL   = process.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY   = process.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_KEY   = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
 const OPENAI_KEY     = process.env.VITE_OPENAI_API_KEY;
 const ANTHROPIC_KEY  = process.env.VITE_ANTHROPIC_API_KEY;
 
@@ -147,8 +149,9 @@ for (const { id, query, category } of queries) {
   // 2. Retrieve
   const { data: posts, error } = await supabase.rpc('match_posts', {
     query_embedding: embedding,
+    match_threshold: MATCH_THRESHOLD,
     match_count: MATCH_COUNT,
-    filter_subreddit: null,
+    stage_filter: null,
   });
 
   if (error) {

@@ -4,6 +4,26 @@
 
 export const CHANGELOG = [
   {
+    date: "May 7, 2026",
+    title: "The chatbot was broken (and we built a test to find out)",
+    userSummary: "The chatbot now actually uses real community data when answering questions. Before this fix, every response was a fallback — the app was never retrieving anything from the database.",
+    userBullets: [
+      "Chatbot answers are now grounded in real r/eggfreezing and r/IVF posts",
+      "Responses should feel noticeably more specific and human than before",
+      "A retrieval eval harness is now in place to measure and track answer quality over time",
+    ],
+    buildersNote: `
+      <p><strong>The bug:</strong> The Edge Function was calling <code>match_posts</code> with the wrong parameter names — <code>filter_subreddit</code> and no <code>match_threshold</code> — while the actual database function expects <code>stage_filter</code> and <code>match_threshold</code>. PostgreSQL function overloading means if the parameter names don't match exactly, it simply doesn't find the function. Supabase returns a schema cache error. The Edge Function caught that error and silently served the fallback response every time. From the outside, the chatbot appeared to work. The answers just had no community grounding at all.</p>
+
+      <p><strong>How we found it:</strong> Built a retrieval eval — a script that runs 23 real user queries through <code>match_posts</code>, scores each returned chunk via Claude Haiku (binary PASS/FAIL: does this chunk help answer the question?), and writes results to a timestamped CSV. The first run returned errors on all 23 queries. Reading the error message from the CSV revealed the parameter name mismatch immediately. The eval found a bug the app had been hiding for weeks.</p>
+
+      <p><strong>The eval itself:</strong> Pass bar is 6/8 chunks relevant = PASS. First clean run: 2/23 queries passed (9%). That's the baseline. Retrieval quality needs work — separate problem from the bug fix, to be investigated next. Runs with <code>npm run eval</code>.</p>
+
+      <p><strong>Watch out for:</strong> <code>match_threshold</code> is now 0.75 in the Edge Function. Too many "I don't have info on that" responses = threshold too strict. Vague or off-topic answers = too loose. The retrieval eval is the instrument for measuring this.</p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "May 4, 2026",
     title: "Real stories, finally",
     userSummary: "The milestone cards throughout the journey map now show real wisdom, quotes, and patterns from women who've actually been through egg freezing — not placeholder text.",
