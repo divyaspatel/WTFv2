@@ -35,21 +35,18 @@ const PASS_BAR   = 6;   // minimum relevant chunks for a query to PASS (6/8 = 75
 const JUDGE_MODEL = 'claude-haiku-4-5-20251001';
 
 // ── Env validation ────────────────────────────────────────────────────────────
-const REQUIRED_VARS = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY', 'OPENAI_API_KEY', 'ANTHROPIC_API_KEY'];
+const REQUIRED_VARS = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY', 'VITE_OPENAI_API_KEY', 'VITE_ANTHROPIC_API_KEY'];
 const missing = REQUIRED_VARS.filter(k => !process.env[k]);
 if (missing.length) {
   console.error(`\nMissing required env vars: ${missing.join(', ')}`);
-  console.error('\nNote: OPENAI_API_KEY and ANTHROPIC_API_KEY are Edge Function secrets.');
-  console.error('For local eval, add them to your .env file:\n');
-  console.error('  OPENAI_API_KEY=sk-...');
-  console.error('  ANTHROPIC_API_KEY=sk-ant-...\n');
+  console.error('Check your .env file.\n');
   process.exit(1);
 }
 
 const SUPABASE_URL   = process.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY   = process.env.VITE_SUPABASE_ANON_KEY;
-const OPENAI_KEY     = process.env.OPENAI_API_KEY;
-const ANTHROPIC_KEY  = process.env.ANTHROPIC_API_KEY;
+const OPENAI_KEY     = process.env.VITE_OPENAI_API_KEY;
+const ANTHROPIC_KEY  = process.env.VITE_ANTHROPIC_API_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const queries  = JSON.parse(fs.readFileSync(path.join(__dirname, 'queries.json'), 'utf8'));
