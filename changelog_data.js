@@ -4,6 +4,28 @@
 
 export const CHANGELOG = [
   {
+    date: "May 8, 2026",
+    title: "The app was broken and we didn't know it",
+    userSummary: "The 'Try out WTF in Beta' button now actually works, and feedback you submit now lands in our database.",
+    userBullets: [
+      "CTA button on the homepage navigates correctly for the first time on the live site",
+      "Thumbs up/down feedback on milestone sections is now stored and queryable",
+      "The whole app's JS was silently failing on the live site — this fixes all of it",
+    ],
+    buildersNote: `
+      <p><strong>The root cause was invisible:</strong> GitHub Actions was completing successfully on every push. GitHub Pages was serving the site. Both systems appeared healthy — they just weren't connected. Pages was configured to deploy from the <code>main</code> branch root (raw source files), not from the GitHub Actions artifact (the Vite-built <code>dist/</code>). The action was uploading the correct bundle, but Pages was ignoring it.</p>
+
+      <p><strong>Why this was hard to catch:</strong> The site looked fine. HTML and CSS render without JS. The button was visible, styled correctly, and appeared interactive. But <code>import.meta.env</code> is a Vite-specific construct — browsers don't understand it natively. The raw <code>app.js</code> crashed on line 4, silently killing every event listener before any were attached. One console error, invisible to anyone not actively looking at DevTools.</p>
+
+      <p><strong>The fix was a one-click settings change:</strong> GitHub repo → Settings → Pages → Source → switch from "Deploy from a branch" to "GitHub Actions." The architecture was always correct; just the wrong source setting.</p>
+
+      <p><strong>The lesson:</strong> "Deploy succeeded" means the CI job completed — not that users can use the app. The only reliable signal is: does the actual user-facing action work? There was no smoke test for "does the CTA button navigate." Add one.</p>
+
+      <p><strong>The feedback telemetry bug was separate:</strong> <code>SESSION_ID</code> was generated correctly but never sent in the POST body to Supabase. Supabase rejected inserts silently — HTTP 400 responses swallowed by a bare catch block. Fixed by adding <code>user_session_id: SESSION_ID</code> to the request. Now every thumbs up/down + comment lands in <code>feedback_events</code> with a session ID for grouping.</p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "May 4, 2026",
     title: "Real stories, finally",
     userSummary: "The milestone cards throughout the journey map now show real wisdom, quotes, and patterns from women who've actually been through egg freezing — not placeholder text.",
