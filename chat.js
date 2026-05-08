@@ -2,7 +2,16 @@
 // All API calls run server-side. Client only needs VITE_SUPABASE_URL + VITE_SUPABASE_ANON_KEY.
 
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc3hjbnhmc2F3cGxraWVvY2hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MTA5NDUsImV4cCI6MjA4NzE4Njk0NX0.PGQMJv7fdRraBhatDIWp3s6qnksLxxDmPVsxr1bSOuw';
-const EDGE_URL = 'https://agsxcnxfsawplkieochk.supabase.co/functions/v1/wtf-chat';
+const SUPABASE_URL = 'https://agsxcnxfsawplkieochk.supabase.co';
+const EDGE_URL = `${SUPABASE_URL}/functions/v1/wtf-chat`;
+
+const SESSION_ID = (() => {
+  let id = sessionStorage.getItem('wtf_session');
+  if (!id) { id = crypto.randomUUID(); sessionStorage.setItem('wtf_session', id); }
+  return id;
+})();
+
+const isMobile = () => window.matchMedia('(pointer: coarse)').matches;
 
 // ── DOM helpers ───────────────────────────────────────────────────────────────
 function esc(s) {
@@ -113,7 +122,98 @@ export function setDockChips(chips) {
 // ── State ─────────────────────────────────────────────────────────────────────
 let busy = false;
 let stage = 'active';
+let currentMilestone = null;
 const history = [];
+
+// ── Telemetry ─────────────────────────────────────────────────────────────────
+async function post(table, body) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${ANON_KEY}`,
+        'apikey': ANON_KEY,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(body),
+    });
+  } catch { /* fail silently */ }
+}
+
+function logChatMessage(question, response) {
+  post('chat_messages', {
+    session_id: SESSION_ID,
+    stage,
+    milestone: currentMilestone,
+    question,
+    response,
+    is_mobile: isMobile(),
+  });
+}
+
+function logChatFeedback(verdict, text, question, response) {
+  if (!verdict) return;
+  post('feedback_events', {
+    user_session_id: SESSION_ID,
+    source: 'chatbot',
+    verdict,
+    optional_text: text || null,
+    milestone: currentMilestone,
+    section: stage,
+    question,
+    bot_response: response,
+  });
+}
+
+// ── Per-response feedback widget ──────────────────────────────────────────────
+function appendChatFeedback(msgDiv, question, response) {
+  const fb = document.createElement('div');
+  fb.className = 'msg-fb';
+  fb.innerHTML = `
+    <div class="mfb-btns">
+      <button class="mfb-btn up" aria-label="Helpful">👍</button>
+      <button class="mfb-btn dn" aria-label="Not helpful">👎</button>
+    </div>
+    <div class="mfb-form" hidden>
+      <input class="mfb-txt" type="text" placeholder="" maxlength="280">
+      <div class="mfb-acts">
+        <button class="mfb-send">Send</button>
+        <button class="mfb-skip">Skip</button>
+      </div>
+    </div>
+  `;
+
+  const upBtn = fb.querySelector('.mfb-btn.up');
+  const dnBtn = fb.querySelector('.mfb-btn.dn');
+  const form  = fb.querySelector('.mfb-form');
+  const txt   = fb.querySelector('.mfb-txt');
+  const send  = fb.querySelector('.mfb-send');
+  const skip  = fb.querySelector('.mfb-skip');
+  let verdict = null;
+
+  function selectVerdict(v) {
+    verdict = v;
+    upBtn.classList.toggle('selected', v === 'up');
+    dnBtn.classList.toggle('selected', v === 'down');
+    txt.placeholder = v === 'up' ? "What's working?" : 'What could be better?';
+    form.removeAttribute('hidden');
+    txt.focus();
+  }
+
+  function submit(comment) {
+    logChatFeedback(verdict, comment, question, response);
+    fb.innerHTML = '<span class="mfb-thanks">Thanks ✓</span>';
+  }
+
+  upBtn.addEventListener('click', () => selectVerdict('up'));
+  dnBtn.addEventListener('click', () => selectVerdict('down'));
+  send.addEventListener('click', () => submit(txt.value.trim()));
+  skip.addEventListener('click', () => submit(null));
+  txt.addEventListener('keydown', e => { if (e.key === 'Enter') submit(txt.value.trim()); });
+
+  msgDiv.appendChild(fb);
+}
 
 // ── Core handler ──────────────────────────────────────────────────────────────
 async function handle(text) {
@@ -169,6 +269,9 @@ async function handle(text) {
       }
     }
 
+    logChatMessage(text, full);
+    appendChatFeedback(bubble.closest('.msg'), text, full);
+
     history.push({ role: 'user', content: text });
     history.push({ role: 'assistant', content: full });
   } catch (err) {
@@ -181,7 +284,11 @@ async function handle(text) {
   busy = false;
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── Exports ───────────────────────────────────────────────────────────────────
+export function setDockMilestone(milestoneId) {
+  currentMilestone = milestoneId;
+}
+
 export function initDockChat(initialStage = 'active') {
   stage = initialStage;
 
