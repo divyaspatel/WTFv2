@@ -26,6 +26,47 @@ export const CHANGELOG = [
     blogUrl: null,
   },
   {
+    date: "May 8, 2026",
+    title: "Every chat question is now logged — and you can rate each response",
+    userSummary: "Every question you ask the chatbot and every response it gives is now stored. You can also give a thumbs up or down on any response directly in the chat.",
+    userBullets: [
+      "Thumbs up/down appears under each bot response — tap to rate, add a comment if you want",
+      "Your question and the bot's response are saved together so feedback is always in context",
+      "Questions are tagged with which phase of the journey you're on when you ask them",
+    ],
+    buildersNote: `
+      <p><strong>Why log the conversations:</strong> The chatbot is only as good as what it's being asked. Logging Q&amp;A to a <code>chat_messages</code> table gives us a real picture of what questions women are actually bringing — which will inform both content and RAG tuning. Each row captures the session, stage, milestone, question, response, and whether the user was on mobile.</p>
+
+      <p><strong>The per-response feedback design:</strong> Editorial feedback (thumbs on milestone cards) was already wired. Chat feedback needed a different pattern — the feedback has to be tied to a specific exchange, not just a general "was this helpful?" The widget renders under each bot bubble after streaming finishes, captures the verdict and an optional comment, and logs to the same <code>feedback_events</code> table with <code>source: 'chatbot'</code> plus the exact question and response that was rated.</p>
+
+      <p><strong>The milestone threading:</strong> The chat already knew the user's stage (<code>active</code>), but not which specific milestone they were viewing when they asked a question. Added a <code>setDockMilestone()</code> export to <code>chat.js</code> called from <code>renderMilestone()</code> in <code>app.js</code> — so now every logged message also carries the milestone (e.g. <code>re_consult</code>, <code>stim_start</code>). This matters for understanding whether questions cluster around specific phases.</p>
+
+      <p><strong>Source tagging:</strong> Both editorial and chatbot feedback now land in the same <code>feedback_events</code> table, tagged <code>source: 'editorial'</code> or <code>source: 'chatbot'</code>. Keeping them in one table makes it easy to query all feedback at once; the source field makes it easy to separate them.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "May 4, 2026",
+    title: "No more phone frame",
+    userSummary: "The app now fills your actual screen — whether you're on your phone, tablet, or desktop browser. No more tiny cutout in the middle of the page.",
+    userBullets: [
+      "On mobile: the app uses your full screen, exactly like any native app would",
+      "On desktop: content centers in a clean column — no phone-shaped box, no gray surround",
+      "\"What's new →\" link now appears on all devices, not just desktop",
+      "All content is reachable by scrolling — nothing is clipped or hidden off-screen",
+    ],
+    buildersNote: `
+      <p><strong>The problem:</strong> The original UI wrapped everything in a <code>#phone</code> div — literally 375×790px with rounded corners, drop shadow, and a fake status bar showing "9:41" and a battery icon. The intent was to demonstrate the mobile-first design in a browser. The consequence was a broken product: fixed pixel dimensions clipped content, the footer lived outside the fake phone so it was invisible on real phones, and opening the app on an actual device meant seeing a phone-within-a-phone.</p>
+
+      <p><strong>Mobile-first ≠ phone frame:</strong> Mobile-first means your CSS defaults to mobile layout and scales up via media queries. It does not mean render a phone shape. These are completely different things. The frame was a demo artifact that shipped into production.</p>
+
+      <p><strong>The fix:</strong> Deleted the <code>#phone</code> wrapper, fake status bar, and 88 lines of CSS. Replaced with a proper <code>#app</code> flex column filling <code>100dvh</code>, centered at <code>max-width: 560px</code> on desktop, full-width on mobile. Moved the footer inside the app. Fixed S0 scroll so content doesn't clip on short screens.</p>
+
+      <p><strong>What to watch:</strong> The 560px max-width is a reading-comfort choice, not a constraint. If you ever want a two-column layout on wider screens, that's the next lever to pull.</p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "May 4, 2026",
     title: "Real stories, finally",
     userSummary: "The milestone cards throughout the journey map now show real wisdom, quotes, and patterns from women who've actually been through egg freezing — not placeholder text.",

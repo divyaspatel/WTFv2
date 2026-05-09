@@ -13,6 +13,29 @@
 
 ---
 
+## Shipped May 8, 2026 — Every chat question is now logged — and you can rate each response
+
+**What changed for users:** Every question you ask the chatbot and every response it gives is now stored. You can also give a thumbs up or down on any response directly in the chat.
+
+**User impact bullets:**
+- Thumbs up/down appears under each bot response — tap to rate, add a comment if you want
+- Your question and the bot's response are saved together so feedback is always in context
+- Questions are tagged with which phase of the journey you're on when you ask them
+
+**Technical decisions:**
+
+*Why log the conversations:* The chatbot is only as good as what it's being asked. Logging Q&A to a `chat_messages` table gives a real picture of what questions women are actually bringing — which will inform both content and RAG tuning. Each row captures session, stage, milestone, question, response, and whether the user was on mobile.
+
+*The per-response feedback design:* Editorial feedback (thumbs on milestone cards) was already wired. Chat feedback needed a different pattern — tied to a specific exchange, not a general "was this helpful?" The widget renders under each bot bubble after streaming finishes, captures the verdict and an optional comment, and logs to `feedback_events` with `source: 'chatbot'` plus the exact question and response that was rated.
+
+*Milestone threading:* The chat already knew the user's stage (`active`), but not which specific milestone they were viewing when they asked. Added `setDockMilestone()` export called from `renderMilestone()` — so every logged message also carries the milestone (e.g. `re_consult`, `stim_start`). This matters for understanding whether questions cluster around specific phases.
+
+*Source tagging:* Both editorial and chatbot feedback land in the same `feedback_events` table, tagged `source: 'editorial'` or `source: 'chatbot'`. One table for querying everything; the source field for filtering.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped May 8, 2026 — The app was broken and we didn't know it
 
 **What changed for users:** The "Try out WTF in Beta" button now actually works. Feedback you submit (thumbs up/down + comments) now lands in our database.
