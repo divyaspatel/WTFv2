@@ -1,4 +1,4 @@
-import { initDockChat, setDockChips } from './chat.js';
+import { initDockChat, setDockChips, setDockMilestone } from './chat.js';
 
 // ── Illustration map (dbId → public asset filename) ───────────────────────────
 const BASE = import.meta.env.BASE_URL;
@@ -344,6 +344,7 @@ const THUMB_DOWN = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" 
 // ── Milestone panel ───────────────────────────────────────────────────────────
 function renderMilestone(milestoneId) {
   currentMilestone = milestoneId;
+  setDockMilestone(milestoneId);
   renderStrip();
   setDockChips(MILESTONES.find(m => m.id === milestoneId)?.chips || []);
 
@@ -570,6 +571,7 @@ async function logFeedback({ milestone, section, verdict, text }) {
       },
       body: JSON.stringify({
         user_session_id: SESSION_ID,
+        source: 'editorial',
         verdict,
         optional_text: text || null,
         milestone,

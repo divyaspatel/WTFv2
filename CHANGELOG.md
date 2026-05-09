@@ -13,6 +13,54 @@
 
 ---
 
+## Shipped May 8, 2026 — Every chat question is now logged — and you can rate each response
+
+**What changed for users:** Every question you ask the chatbot and every response it gives is now stored. You can also give a thumbs up or down on any response directly in the chat.
+
+**User impact bullets:**
+- Thumbs up/down appears under each bot response — tap to rate, add a comment if you want
+- Your question and the bot's response are saved together so feedback is always in context
+- Questions are tagged with which phase of the journey you're on when you ask them
+
+**Technical decisions:**
+
+*Why log the conversations:* The chatbot is only as good as what it's being asked. Logging Q&A to a `chat_messages` table gives a real picture of what questions women are actually bringing — which will inform both content and RAG tuning. Each row captures session, stage, milestone, question, response, and whether the user was on mobile.
+
+*The per-response feedback design:* Editorial feedback (thumbs on milestone cards) was already wired. Chat feedback needed a different pattern — tied to a specific exchange, not a general "was this helpful?" The widget renders under each bot bubble after streaming finishes, captures the verdict and an optional comment, and logs to `feedback_events` with `source: 'chatbot'` plus the exact question and response that was rated.
+
+*Milestone threading:* The chat already knew the user's stage (`active`), but not which specific milestone they were viewing when they asked. Added `setDockMilestone()` export called from `renderMilestone()` — so every logged message also carries the milestone (e.g. `re_consult`, `stim_start`). This matters for understanding whether questions cluster around specific phases.
+
+*Source tagging:* Both editorial and chatbot feedback land in the same `feedback_events` table, tagged `source: 'editorial'` or `source: 'chatbot'`. One table for querying everything; the source field for filtering.
+
+**Blog URL:** *(coming soon)*
+
+---
+
+## Shipped May 8, 2026 — The app was broken and we didn't know it
+
+**What changed for users:** The "Try out WTF in Beta" button now actually works. Feedback you submit (thumbs up/down + comments) now lands in our database.
+
+**User impact bullets:**
+- CTA button on the homepage navigates correctly for the first time on the live site
+- Thumbs up/down feedback on milestone sections is now stored and queryable
+- The whole app's JS was silently failing on the live site — this fixes all of it
+
+**Technical decisions:**
+
+*The root cause was invisible:* GitHub Actions was running, completing successfully, and reporting "success" on every push. GitHub Pages was also serving the site. Both systems were working — they just weren't connected. Pages was configured to deploy from the `main` branch root (raw source files), not from the GitHub Actions artifact (the Vite-built `dist/`). The action was uploading the correct built bundle to the Pages environment, but Pages was ignoring it and serving raw source files instead.
+
+*Why this was hard to catch:* The site looked fine. HTML and CSS render without JS. The button was visible, styled correctly, and appeared interactive. But `import.meta.env` is a Vite-specific construct — browsers don't understand it. The raw `app.js` crashed on line 4 (`import.meta.env.BASE_URL`), silently killing every event listener before any were attached. One console error, invisible to anyone who wasn't actively looking.
+
+*The fix was a one-click settings change:* GitHub repo → Settings → Pages → Source → switch from "Deploy from a branch" to "GitHub Actions." Then trigger a fresh deploy. The architecture was always correct; the Pages source setting was just wrong.
+
+*The lesson:* "Deploy succeeded" means the CI job completed — it doesn't mean users can use the app. The only reliable signal is: does the actual user-facing action work? We had no smoke test for "does clicking the CTA button navigate." Add one.
+
+*The feedback telemetry bug was separate but related:* `SESSION_ID` was being generated correctly but never included in the POST body sent to Supabase. Supabase was rejecting inserts silently (HTTP 400 responses swallowed by a bare `catch` block). Fixed by adding `user_session_id: SESSION_ID` to the request body. Now every thumbs up/down + comment lands in `feedback_events` with a session ID for grouping.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped May 7, 2026 — The chatbot was broken (and we built a test to find out)
 
 **What changed for users:** The chatbot now actually uses real community data when answering questions. Before this fix, every response was a fallback — the app was never retrieving anything from the database.
