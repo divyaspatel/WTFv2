@@ -109,7 +109,7 @@ export const CHANGELOG = [
   {
     date: "April 29, 2026",
     title: "The full journey, in one view",
-    userSummary: "The app now shows you all 10 phases of the egg freezing journey before you start asking questions — from "Should I even do this?" all the way through "My results are in."",
+    userSummary: 'The app now shows you all 10 phases of the egg freezing journey before you start asking questions — from "Should I even do this?" all the way through "My results are in."',
     userBullets: [
       "10-phase journey map replaces the previous editorial article format",
       "Each phase is its own card: title, key questions women ask, and community wisdom",
