@@ -5,6 +5,26 @@
 export const CHANGELOG = [
   {
     date: "May 8, 2026",
+    title: "Every chat question is now logged — and you can rate each response",
+    userSummary: "Every question you ask the chatbot and every response it gives is now stored. You can also give a thumbs up or down on any response directly in the chat.",
+    userBullets: [
+      "Thumbs up/down appears under each bot response — tap to rate, add a comment if you want",
+      "Your question and the bot's response are saved together so feedback is always in context",
+      "Questions are tagged with which phase of the journey you're on when you ask them",
+    ],
+    buildersNote: `
+      <p><strong>Why log the conversations:</strong> The chatbot is only as good as what it's being asked. Logging Q&amp;A to a <code>chat_messages</code> table gives us a real picture of what questions women are actually bringing — which will inform both content and RAG tuning. Each row captures the session, stage, milestone, question, response, and whether the user was on mobile.</p>
+
+      <p><strong>The per-response feedback design:</strong> Editorial feedback (thumbs on milestone cards) was already wired. Chat feedback needed a different pattern — the feedback has to be tied to a specific exchange, not just a general "was this helpful?" The widget renders under each bot bubble after streaming finishes, captures the verdict and an optional comment, and logs to the same <code>feedback_events</code> table with <code>source: 'chatbot'</code> plus the exact question and response that was rated.</p>
+
+      <p><strong>The milestone threading:</strong> The chat already knew the user's stage (<code>active</code>), but not which specific milestone they were viewing when they asked a question. Added a <code>setDockMilestone()</code> export to <code>chat.js</code> called from <code>renderMilestone()</code> in <code>app.js</code> — so now every logged message also carries the milestone (e.g. <code>re_consult</code>, <code>stim_start</code>). This matters for understanding whether questions cluster around specific phases.</p>
+
+      <p><strong>Source tagging:</strong> Both editorial and chatbot feedback now land in the same <code>feedback_events</code> table, tagged <code>source: 'editorial'</code> or <code>source: 'chatbot'</code>. Keeping them in one table makes it easy to query all feedback at once; the source field makes it easy to separate them.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "May 8, 2026",
     title: "The app was broken and we didn't know it",
     userSummary: "The 'Try out WTF in Beta' button now actually works, and feedback you submit now lands in our database.",
     userBullets: [
@@ -26,22 +46,22 @@ export const CHANGELOG = [
     blogUrl: null,
   },
   {
-    date: "May 8, 2026",
-    title: "Every chat question is now logged — and you can rate each response",
-    userSummary: "Every question you ask the chatbot and every response it gives is now stored. You can also give a thumbs up or down on any response directly in the chat.",
+    date: "May 7, 2026",
+    title: "The chatbot was broken (and we built a test to find out)",
+    userSummary: "The chatbot now actually uses real community data when answering questions. Before this fix, every response was a fallback — the app was never retrieving anything from the database.",
     userBullets: [
-      "Thumbs up/down appears under each bot response — tap to rate, add a comment if you want",
-      "Your question and the bot's response are saved together so feedback is always in context",
-      "Questions are tagged with which phase of the journey you're on when you ask them",
+      "Chatbot answers are now grounded in real r/eggfreezing and r/IVF posts",
+      "Responses should feel noticeably more specific and human than before",
+      "A retrieval eval harness is now in place to measure and track answer quality over time",
     ],
     buildersNote: `
-      <p><strong>Why log the conversations:</strong> The chatbot is only as good as what it's being asked. Logging Q&amp;A to a <code>chat_messages</code> table gives us a real picture of what questions women are actually bringing — which will inform both content and RAG tuning. Each row captures the session, stage, milestone, question, response, and whether the user was on mobile.</p>
+      <p><strong>The bug:</strong> The Edge Function was calling <code>match_posts</code> with the wrong parameter names — <code>filter_subreddit</code> and no <code>match_threshold</code> — while the actual database function expects <code>stage_filter</code> and <code>match_threshold</code>. PostgreSQL function overloading means if the parameter names don't match exactly, it simply doesn't find the function. Supabase returns a schema cache error. The Edge Function caught that error and silently served the fallback response every time. From the outside, the chatbot appeared to work. The answers just had no community grounding at all.</p>
 
-      <p><strong>The per-response feedback design:</strong> Editorial feedback (thumbs on milestone cards) was already wired. Chat feedback needed a different pattern — the feedback has to be tied to a specific exchange, not just a general "was this helpful?" The widget renders under each bot bubble after streaming finishes, captures the verdict and an optional comment, and logs to the same <code>feedback_events</code> table with <code>source: 'chatbot'</code> plus the exact question and response that was rated.</p>
+      <p><strong>How we found it:</strong> Built a retrieval eval — a script that runs 23 real user queries through <code>match_posts</code>, scores each returned chunk via Claude Haiku (binary PASS/FAIL: does this chunk help answer the question?), and writes results to a timestamped CSV. The first run returned errors on all 23 queries. Reading the error message from the CSV revealed the parameter name mismatch immediately. The eval found a bug the app had been hiding for weeks.</p>
 
-      <p><strong>The milestone threading:</strong> The chat already knew the user's stage (<code>active</code>), but not which specific milestone they were viewing when they asked a question. Added a <code>setDockMilestone()</code> export to <code>chat.js</code> called from <code>renderMilestone()</code> in <code>app.js</code> — so now every logged message also carries the milestone (e.g. <code>re_consult</code>, <code>stim_start</code>). This matters for understanding whether questions cluster around specific phases.</p>
+      <p><strong>The eval itself:</strong> Pass bar is 6/8 chunks relevant = PASS. First clean run: 2/23 queries passed (9%). That's the baseline. Retrieval quality needs work — separate problem from the bug fix, to be investigated next. Runs with <code>npm run eval</code>.</p>
 
-      <p><strong>Source tagging:</strong> Both editorial and chatbot feedback now land in the same <code>feedback_events</code> table, tagged <code>source: 'editorial'</code> or <code>source: 'chatbot'</code>. Keeping them in one table makes it easy to query all feedback at once; the source field makes it easy to separate them.</p>
+      <p><strong>Watch out for:</strong> <code>match_threshold</code> is now 0.75 in the Edge Function. Too many "I don't have info on that" responses = threshold too strict. Vague or off-topic answers = too loose. The retrieval eval is the instrument for measuring this.</p>
     `,
     blogUrl: null,
   },

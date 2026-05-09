@@ -89,8 +89,9 @@ Deno.serve(async (req) => {
   );
   const { data: posts, error } = await supabase.rpc('match_posts', {
     query_embedding: embedding,
+    match_threshold: 0.75,
     match_count: 8,
-    filter_subreddit: null,
+    stage_filter: null,
   });
   if (error) throw error;
 

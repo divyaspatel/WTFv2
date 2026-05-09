@@ -61,6 +61,29 @@
 
 ---
 
+## Shipped May 7, 2026 — The chatbot was broken (and we built a test to find out)
+
+**What changed for users:** The chatbot now actually uses real community data when answering questions. Before this fix, every response was a fallback — the app was never retrieving anything from the database.
+
+**User impact bullets:**
+- Chatbot answers are now grounded in real r/eggfreezing and r/IVF posts
+- Responses should feel noticeably more specific and human than before
+- A retrieval eval harness is now in place to measure and track answer quality over time
+
+**Technical decisions:**
+
+*The bug:* The Edge Function was calling `match_posts` with the wrong parameter names — `filter_subreddit` and no `match_threshold` — while the actual database function expects `stage_filter` and `match_threshold`. PostgreSQL function overloading means if the parameter names don't match exactly, it simply doesn't find the function. Supabase returns a schema cache error. The Edge Function caught that error and silently served the fallback response every time. From the outside, the chatbot appeared to work. The answers just had no community grounding at all.
+
+*How we found it:* Built a retrieval eval — a script that runs 23 real user queries through `match_posts`, scores each returned chunk via Claude Haiku (binary PASS/FAIL: does this chunk help answer the question?), and writes results to a timestamped CSV. The first run returned errors on all 23 queries. Reading the error message from the CSV revealed the parameter name mismatch immediately. The eval found a bug the app had been hiding for weeks.
+
+*The eval itself:* Pass bar is 6/8 chunks relevant = PASS. First clean run: 2/23 queries passed (9%). That's the baseline. Retrieval quality needs work — separate problem from the bug fix, to be investigated next. The eval runs with `npm run eval`.
+
+*What to watch:* The `match_threshold` is now set to 0.75 in the Edge Function. If the chatbot starts returning "I don't have info on that" too often, the threshold may be too strict. If answers feel vague or off-topic, it's too loose. The retrieval eval is the instrument for measuring this.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped May 4, 2026 — No more phone frame
 
 **What changed for users:** The app now fills your actual screen — whether you're on your phone, tablet, or desktop browser. No more tiny cutout in the middle of the page.
