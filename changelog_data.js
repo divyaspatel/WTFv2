@@ -4,6 +4,28 @@
 
 export const CHANGELOG = [
   {
+    date: "May 13, 2026",
+    title: "The chatbot now finds better answers before it searches",
+    userSummary: "Responses are more grounded in real community experience. Questions that used to return a fallback now pull relevant posts from women who've been through it.",
+    userBullets: [
+      "More questions get real community context instead of a generic fallback",
+      "Answers feel less like keyword matching — the bot better understands what you're actually asking",
+      "Retrieval improved from ~57% of questions finding good context to ~91%",
+    ],
+    buildersNote: `
+      <p><strong>The core problem:</strong> Our corpus is Reddit posts — answers written by women who've been through it. Our queries are questions. In vector space, questions and answers live in different neighborhoods, so cosine similarity kept surfacing question-like posts ("has anyone else found injections painful?") over answer-like posts ("the injections weren't bad for me, just a small sting"). The retriever was finding the wrong posts not because they weren't there, but because it was searching in the wrong direction.</p>
+
+      <p><strong>Why HyDE:</strong> HyDE (Hypothetical Document Embeddings) fixes this by generating a hypothetical Reddit-style answer post before embedding — then embedding that instead of the raw question. When a user asks "how much did this cost?", Haiku writes a 2-4 sentence Reddit post from a woman who's been through it, then we embed that. The resulting vector lands in answer space, where the actual community posts are. It's one extra Haiku call (~200ms) before the OpenAI embed.</p>
+
+      <p><strong>Options considered:</strong> Reranking (cross-encoder second pass) was the other candidate. Reranking improves ordering within an already-retrieved set — useful when you're finding the right neighborhood but surfacing slightly wrong chunks. Our problem was more fundamental: we weren't finding the right neighborhood at all. HyDE fixes the root cause; reranking would have polished a broken signal.</p>
+
+      <p><strong>Trade-offs:</strong> Each user message now makes one extra Haiku call before the embed, adding ~200-400ms of latency. Match count also increased from 8 to 20 chunks — more community context per response, at the cost of a larger system prompt (~4,000 more tokens per Sonnet call).</p>
+
+      <p><strong>What to watch:</strong> Latency on first-response feel. If users notice the chat feeling slow, the HyDE call is the first thing to profile. Also worth watching: whether 20 chunks vs 8 changes response quality — more context can dilute as well as enrich.</p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "May 8, 2026",
     title: "Every chat question is now logged — and you can rate each response",
     userSummary: "Every question you ask the chatbot and every response it gives is now stored. You can also give a thumbs up or down on any response directly in the chat.",

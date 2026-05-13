@@ -31,10 +31,12 @@ config({ path: path.resolve(__dirname, '..', '.env') });
 
 // ── Config ────────────────────────────────────────────────────────────────────
 // Change these to test different configurations, then compare CSV outputs.
-const MATCH_COUNT       = 8;     // chunks retrieved per query
+const MATCH_COUNT       = 20;    // chunks retrieved per query
 const MATCH_THRESHOLD   = 0.75;  // cosine similarity cutoff
-const PASS_BAR          = 6;     // minimum relevant chunks for a query to PASS (6/8 = 75%)
-const JUDGE_MODEL = 'claude-haiku-4-5-20251001';
+const PASS_BAR          = 10;    // minimum relevant chunks for a query to PASS (10/20 = 50%)
+const JUDGE_MODEL       = 'claude-haiku-4-5-20251001';
+const HYDE_ENABLED      = true;  // embed a hypothetical answer instead of the raw question
+const HYDE_MODEL        = 'claude-haiku-4-5-20251001';
 
 // ── Env validation ────────────────────────────────────────────────────────────
 const REQUIRED_VARS = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_SERVICE_ROLE_KEY', 'VITE_OPENAI_API_KEY', 'VITE_ANTHROPIC_API_KEY'];
@@ -71,25 +73,55 @@ async function embed(text) {
   return data[0].embedding;
 }
 
+// ── HyDE ──────────────────────────────────────────────────────────────────────
+// Generates a hypothetical Reddit-style answer post so the embedding lands in
+// "answer space" rather than "question space" — reduces question-posts ranking
+// over answer-posts in cosine similarity.
+async function generateHypotheticalDoc(query) {
+  const prompt = `You are a woman who has been through egg freezing or IVF. Write a short Reddit post (2-4 sentences) that directly answers this question from personal experience. Be specific and practical. Do not add a title or preamble — just the post body.
+
+Question: "${query}"`;
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': ANTHROPIC_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: HYDE_MODEL,
+      max_tokens: 200,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`HyDE generation ${res.status}: ${body}`);
+  }
+  const { content } = await res.json();
+  return content[0]?.text?.trim() ?? query;
+}
+
 // ── Judge ─────────────────────────────────────────────────────────────────────
 async function judge(query, chunk) {
-  const prompt = `You are a strict retrieval quality evaluator for a fertility preservation app.
+  const prompt = `You are a retrieval quality evaluator for a fertility preservation app.
 
 Query: "${query}"
 
 Retrieved chunk:
 "${chunk}"
 
-Does this chunk help answer the query?
+Does this chunk contain information useful to someone asking this question?
 
 Score PASS if the chunk:
-- Directly addresses the query topic
-- Contains experience, information, or perspective that would help answer the question
+- Contains any relevant information that would help answer the query, even partially
+- Shares a personal experience, number, cost, or anecdote that relates to the topic — a single data point counts
+- Would add value as one piece of context alongside other retrieved chunks
 
 Score FAIL if the chunk:
-- Is about a different topic
-- Mentions the query topic only incidentally
-- Would not help a user asking this question
+- Is about a completely different topic
+- Only mentions the query topic in passing without adding any substance
 
 Respond on exactly two lines:
 Line 1: PASS or FAIL
@@ -122,10 +154,11 @@ Line 2: One sentence explaining why.`;
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const timestamp = new Date().toISOString().slice(0, 10);
-const runLabel  = `${timestamp}_n${MATCH_COUNT}`;
+const VERSION   = 'hyde-with-doc';
+const runLabel  = `${timestamp}_n${MATCH_COUNT}_t${String(MATCH_THRESHOLD).replace('.', '')}_v${VERSION}`;
 
 console.log(`\nWTF Retrieval Eval — ${runLabel}`);
-console.log(`Queries: ${queries.length}  |  Chunks/query: ${MATCH_COUNT}  |  Pass bar: ${PASS_BAR}/${MATCH_COUNT}\n`);
+console.log(`Queries: ${queries.length}  |  Chunks/query: ${MATCH_COUNT}  |  Pass bar: ${PASS_BAR}/${MATCH_COUNT}  |  HyDE: ${HYDE_ENABLED}\n`);
 
 const rows = [];
 let queryPassCount = 0;
@@ -135,13 +168,15 @@ for (const { id, query, category } of queries) {
   const label = `[${String(id).padStart(2)}] ${query.slice(0, 55).padEnd(55)}`;
   process.stdout.write(`${label} `);
 
-  // 1. Embed
+  // 1. Embed (optionally via HyDE: generate a hypothetical answer first)
   let embedding;
+  let hydeDoc = '';
   try {
-    embedding = await embed(query);
+    const textToEmbed = HYDE_ENABLED ? (hydeDoc = await generateHypotheticalDoc(query)) : query;
+    embedding = await embed(textToEmbed);
   } catch (err) {
     process.stdout.write(`ERROR (embed)\n`);
-    rows.push({ id, category, query, chunk_rank: '-', chunk_preview: '', score: '', reason: `EMBED_ERROR: ${err.message}`, query_score: '-', query_verdict: 'ERROR' });
+    rows.push({ id, category, query, hyde_doc: hydeDoc, chunk_rank: '-', chunk_preview: '', score: '', reason: `EMBED_ERROR: ${err.message}`, query_score: '-', query_verdict: 'ERROR' });
     queryErrorCount++;
     continue;
   }
@@ -163,7 +198,7 @@ for (const { id, query, category } of queries) {
 
   if (!posts || posts.length === 0) {
     process.stdout.write(`FAIL (0 chunks returned)\n`);
-    rows.push({ id, category, query, chunk_rank: '-', chunk_preview: '', score: 0, reason: 'match_posts returned 0 results', query_score: '0/0', query_verdict: 'FAIL' });
+    rows.push({ id, category, query, hyde_doc: hydeDoc, chunk_rank: '-', chunk_preview: '', score: 0, reason: 'match_posts returned 0 results', query_score: '0/0', query_verdict: 'FAIL' });
     continue;
   }
 
@@ -181,6 +216,7 @@ for (const { id, query, category } of queries) {
         id,
         category,
         query,
+        hyde_doc: hydeDoc,
         chunk_rank: i + 1,
         chunk_preview: chunk.slice(0, 150).replace(/[\n\r]+/g, ' '),
         score: result.score,
@@ -201,7 +237,7 @@ for (const { id, query, category } of queries) {
 }
 
 // ── Write CSV ─────────────────────────────────────────────────────────────────
-const CSV_HEADERS = ['id', 'category', 'query', 'chunk_rank', 'chunk_preview', 'score', 'reason', 'query_score', 'query_verdict'];
+const CSV_HEADERS = ['id', 'category', 'query', 'hyde_doc', 'chunk_rank', 'chunk_preview', 'score', 'reason', 'query_score', 'query_verdict'];
 
 const csvContent = [
   CSV_HEADERS.join(','),

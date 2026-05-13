@@ -69,20 +69,42 @@ Deno.serve(async (req) => {
   try {
   const { message, stage, history } = await req.json();
 
-  // 1. Embed user message
+  // 1. HyDE: generate a hypothetical Reddit-style answer to embed instead of
+  // the raw question — lands in "answer space" where the corpus lives.
+  const hydeRes = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': Deno.env.get('ANTHROPIC_API_KEY')!,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 200,
+      messages: [{
+        role: 'user',
+        content: `You are a woman who has been through egg freezing or IVF. Write a short Reddit post (2-4 sentences) that directly answers this question from personal experience. Be specific and practical. Do not add a title or preamble — just the post body.\n\nQuestion: "${message}"`,
+      }],
+    }),
+  });
+  if (!hydeRes.ok) throw new Error(`HyDE ${hydeRes.status}: ${await hydeRes.text()}`);
+  const hydeData = await hydeRes.json();
+  const textToEmbed = hydeData.content[0]?.text?.trim() ?? message;
+
+  // 2. Embed hypothetical doc
   const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
     },
-    body: JSON.stringify({ input: message, model: 'text-embedding-ada-002' }),
+    body: JSON.stringify({ input: textToEmbed, model: 'text-embedding-ada-002' }),
   });
   if (!embedRes.ok) throw new Error(`Embed ${embedRes.status}: ${await embedRes.text()}`);
   const { data } = await embedRes.json();
   const embedding = data[0].embedding;
 
-  // 2. Retrieve community posts
+  // 3. Retrieve community posts
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -90,12 +112,12 @@ Deno.serve(async (req) => {
   const { data: posts, error } = await supabase.rpc('match_posts', {
     query_embedding: embedding,
     match_threshold: 0.75,
-    match_count: 8,
+    match_count: 20,
     stage_filter: null,
   });
   if (error) throw error;
 
-  // 3. Zero results — stream a fallback event then close
+  // 4. Zero results — stream a fallback event then close
   if (!posts || posts.length === 0) {
     const body = `data: ${JSON.stringify({ type: 'fallback', text: FALLBACK })}\n\ndata: [DONE]\n\n`;
     return new Response(body, {
@@ -103,7 +125,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  // 4. Stream Anthropic response
+  // 5. Stream Anthropic response
   const context = posts.map((p: { chunk_text: string }) => p.chunk_text).join('\n\n');
   const messages = [...(history ?? []), { role: 'user', content: message }];
 
