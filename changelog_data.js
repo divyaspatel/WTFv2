@@ -4,6 +4,18 @@
 
 export const CHANGELOG = [
   {
+    date: "June 1, 2026",
+    title: "Corpus size updated to 10,000+ conversations",
+    userSummary: "The app now correctly reflects how many real community conversations power the chatbot.",
+    userBullets: [
+      "Copy throughout the app updated from '2,000+' to '10,000+' conversations",
+    ],
+    buildersNote: `
+      <p>The corpus grew well past 2,000 posts after expanding scraping across 7 subreddits with multiple sort orders. The copy just hadn't been updated to match. Fixed three instances in index.html — the bridge card, the chat dock header, and the expanded chat dock header.</p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "May 13, 2026",
     title: "The chatbot now finds better answers before it searches",
     userSummary: "Responses are more grounded in real community experience. Questions that used to return a fallback now pull relevant posts from women who've been through it.",
