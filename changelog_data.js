@@ -4,6 +4,28 @@
 
 export const CHANGELOG = [
   {
+    date: "August 3, 2026",
+    title: "The receipts are in the repo: data pipeline + eval trail backed up",
+    userSummary: "Nothing visible changed in the app — this one is about making sure the work behind it can't be lost. The pipeline that builds the 10,000+ conversation corpus and the full experiment trail behind the retrieval overhaul now live in the repo.",
+    userBullets: [
+      "No user-facing changes — the app behaves exactly as before",
+      "The data pipeline (scrape → embed → synthesize) is now version-controlled instead of living only on one laptop",
+      "Every eval run behind the May retrieval decision is archived with a README explaining what was tried and why",
+    ],
+    buildersNote: `
+      <p><strong>The decision:</strong> Two months of the most important work on this product existed only on my local machine — the three-stage Python pipeline that built the corpus, and six eval CSVs documenting how retrieval went from 9% to 100% pass rate. Time to get it into git.</p>
+
+      <p><strong>The options:</strong> (a) leave it local and hope the laptop survives, (b) dump everything into git as-is, or (c) commit selectively. The blockers to (b): a <code>.env</code> with real API keys sitting inside the pipeline folder, and a 71MB <code>posts.json</code> of raw scraped data.</p>
+
+      <p><strong>Final call:</strong> Gitignore the secrets and the raw corpus (it's regenerable by re-running the scraper, and the embedded version persists in Supabase), commit the scripts with a README, and organize the eval CSVs into an "eval/RAG to HyDE experimentation" folder with a decision-trail README — including the two runs that turned out to be recalibrating the judge rather than improving retrieval.</p>
+
+      <p><strong>Watch out for:</strong> The scraper still must run locally — Reddit blocks data-center IPs — so GitHub is backup and documentation here, not automation.</p>
+
+      <p><em>[BUILDER'S NOTE: Replace with the human story — what surprised you, what you'd do differently.]</em></p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "June 1, 2026",
     title: "Corpus size updated to 10,000+ conversations",
     userSummary: "The app now correctly reflects how many real community conversations power the chatbot.",

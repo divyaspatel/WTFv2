@@ -13,6 +13,24 @@
 
 ---
 
+## Shipped August 3, 2026 — The receipts are in the repo: data pipeline + eval trail backed up
+
+**What changed for users:** Nothing visible in the app — this one is about making sure the work behind it can't be lost. The pipeline that builds the 10,000+ conversation corpus and the full experiment trail behind the retrieval overhaul now live in the repo.
+
+**User impact bullets:**
+- No user-facing changes — the app behaves exactly as before
+- The data pipeline (scrape → embed → synthesize) is now version-controlled instead of living only on one laptop
+- Every eval run behind the May retrieval decision is archived with a README explaining what was tried and why
+
+**Technical decisions:**
+Two months of the most important work on this product existed only on my local machine: the three-stage Python pipeline that built the corpus, and six eval CSVs documenting how retrieval went from 9% to 100% pass rate. The options were (a) leave it local and hope the laptop survives, (b) dump everything into git as-is, or (c) commit selectively. The blockers to (b): a `.env` with real API keys sitting inside the pipeline folder, and a 71MB `posts.json` of raw scraped data. Final call: gitignore the secrets and the raw corpus (it's regenerable by re-running the scraper, and the embedded version persists in Supabase), commit the scripts with a README, and organize the eval CSVs into an "eval/RAG to HyDE experimentation" folder with a decision-trail README — including the two runs that turned out to be recalibrating the judge rather than improving retrieval. Watch out for: the scraper still must run locally (Reddit blocks data-center IPs), so GitHub is backup and documentation here, not automation.
+
+[BUILDER'S NOTE: Replace this with what surprised you, what you'd do differently, the human story behind this decision.]
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped June 1, 2026 — Corpus size updated to 10,000+ conversations
 
 **What changed for users:** The app now correctly reflects how many real community conversations power the chatbot.
