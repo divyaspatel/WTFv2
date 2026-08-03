@@ -3,6 +3,18 @@
 .env.local
 .env.*.local
 
+# Scraped Reddit corpus — 71MB, regenerable via pipeline/scraper.py;
+# embedded version lives in Supabase
+pipeline/posts.json
+
+# Supabase CLI local state
+supabase/.temp/
+pipeline/supabase/
+
+# Claude Code local tooling
+.claude/launch.json
+.claude/worktrees/
+
 # Dependencies
 node_modules/
 

@@ -282,6 +282,8 @@ WTFv2/
 ├── app.js                      ← navigation, renderEditorial(); imports chat.js
 ├── chat.js                     ← calls Edge Function; no API keys in client bundle
 ├── supabase/functions/wtf-chat/index.ts  ← embed → match_posts → Anthropic stream
+├── pipeline/                   ← Reddit scrape → embed → synthesize corpus (see pipeline/README.md; runs locally only)
+├── eval/                       ← retrieval eval harness + queries; finished experiment series archived in "eval/RAG to HyDE experimentation/" with a decision-trail README
 ├── editorial_content.js        ← static editorial JSON, all 3 personas
 ├── WTFv2_Design_Prototype.html ← full UI prototype (reference only)
 ├── PRD_MVP.md                  ← product spec and decisions
