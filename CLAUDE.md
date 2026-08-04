@@ -244,13 +244,16 @@ You have access to real community experience from women who've posted on r/eggfr
 ## Screen Flow
 
 ```
-S1: Persona Selector
-  └─► S2: Editorial Column (zero input, always first)
-        └─► S3: Chat Orientation ("Before we talk")
-              └─► S4: Chatbot (RAG-grounded)
+S0: Homepage (landing)
+  └─► S1: Persona Selector
+        └─► S2: Credibility Bridge ("You're not alone")
+              └─► S3: Home (#s-home — "Welcome back", two entry cards)
+                    ├─► S4: Journey (#s-journey — 10-stage list)
+                    │     └─► S5: Stage Detail (#s-detail — tabs: Questions / Wisdom / Resources + chat dock)
+                    └─► S6: Full-screen Chat (#s-chat — RAG-grounded)
 ```
 
-**Editorial must lead.** The chatbot is never the entry point. S3 is the trust/expectation-setting gate before S4.
+The onboarding funnel (S0–S2) still leads. From Home, chat is one tap away (a deliberate Aug 2026 redesign decision — the old "editorial must lead" gate is softened; watch whether users skip journey content). Both chat surfaces (S6 and the S5 dock) are built from `createChatSurface()` in chat.js.
 
 ---
 

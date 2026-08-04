@@ -13,6 +13,24 @@
 
 ---
 
+## Shipped August 3, 2026 — The app got a home: redesign around Home, Journey, and Chat
+
+**What changed for users:** The app has a new mobile-first structure. After onboarding you land on a home screen with two clear paths — browse the journey stage by stage, or ask the community anything — instead of being dropped into a single dense milestone page.
+
+**User impact bullets:**
+- New home screen with two entry cards: "Your journey" and "Ask anything"
+- The journey is now a scrollable list of 10 stage cards (numbered, with descriptions) instead of a horizontal strip of abbreviations like "TEST" and "CONS"
+- Each stage page uses three tabs — Questions to explore / What women wish they knew / Resources — instead of stacked accordions
+- The chatbot has a full-screen home of its own, one tap from the home screen, plus the familiar collapsible dock on every stage page
+- Works on desktop web too — renders as a centered mobile-width column
+
+**Technical decisions:**
+The old journey screen tried to do everything at once: a milestone strip, three accordions, and a chat dock stacked on one screen. The redesign started as a prototype in Claude Design (claude.ai/design), which let me tap through Home → Journey → Stage detail → Chat before committing to code. The big implementation decision: the design now has *two* chat surfaces (full-screen chat and the stage dock), and the old chat code was hardwired to one set of DOM elements. Options were duplicating the chat logic per surface or refactoring it into a factory. Final call: one `createChatSurface()` factory in chat.js that binds streaming, markdown rendering, and telemetry to any set of chat elements — each surface keeps its own conversation history. Two judgment calls that deviated from the prototype: dropped the "you are on stage X" indicator entirely (there's no way for users to set their stage yet, so a hardcoded one would just be wrong for most people), and kept dock conversations alive when switching stages (the prototype wiped them — deleting someone's chat because they navigated felt like a bug). Watch out for: chat is now one tap from home instead of being gated behind the editorial, so the "editorial must lead" principle is softened — worth watching whether users skip the journey content entirely.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped August 3, 2026 — The receipts are in the repo: data pipeline + eval trail backed up
 
 **What changed for users:** Nothing visible in the app — this one is about making sure the work behind it can't be lost. The pipeline that builds the 10,000+ conversation corpus and the full experiment trail behind the retrieval overhaul now live in the repo.

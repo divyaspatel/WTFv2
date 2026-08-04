@@ -1,14 +1,4 @@
-import { initDockChat, setDockChips, setDockMilestone } from './chat.js';
-
-// ── Illustration map (dbId → public asset filename) ───────────────────────────
-const BASE = import.meta.env.BASE_URL;
-const MILESTONE_ILLUSTRATIONS = {
-  initial_testing:   `${BASE}baseline.png`,
-  re_consult:        `${BASE}consultation.png`,
-  stim_start:        `${BASE}stims.png`,
-  trigger_retrieval: `${BASE}retrieval.png`,
-  eggs_frozen:       `${BASE}numbers.png`,
-};
+import { createChatSurface } from './chat.js';
 
 // ── Supabase config (anon key is public) ──────────────────────────────────────
 const SUPABASE_URL = 'https://agsxcnxfsawplkieochk.supabase.co';
@@ -314,8 +304,26 @@ async function loadMilestoneInsights() {
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let currentMilestone = 'testing';
+let viewStageId = 'testing';
+let currentTab = 'questions';
 let dockExpanded = false;
+
+// ── Chat surfaces ─────────────────────────────────────────────────────────────
+const dockChat = createChatSurface({
+  ids: { msgs: 'dock-msgs', empty: 'dock-empty', chips: 'dock-chips', input: 'dock-inp', send: 'dock-snd' },
+  getMilestone: () => viewStageId,
+});
+
+const mainChat = createChatSurface({
+  ids: { msgs: 'ch-msgs', empty: 'ch-empty', chips: 'ch-chips', input: 'ch-inp', send: 'ch-snd' },
+  getMilestone: () => null,
+});
+
+const STARTER_CHIPS = [
+  'Where do I even start?',
+  'How painful are the injections?',
+  'What does it actually cost?',
+];
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function go(id) {
@@ -323,177 +331,93 @@ function go(id) {
   document.getElementById(id).classList.add('on');
 }
 
-// ── Milestone strip ───────────────────────────────────────────────────────────
-function renderStrip() {
-  const strip = document.getElementById('ms-strip');
-  strip.innerHTML = MILESTONES.map((m, i) => `
-    ${i > 0 ? '<div class="ms-arr">→</div>' : ''}
-    <div class="ms-pill${m.id === currentMilestone ? ' active' : ''}" data-milestone="${m.id}">
-      <div class="ms-pill-lbl">${m.label}</div>
-      <div class="ms-pill-here">you are here</div>
+// ── SVG helpers ───────────────────────────────────────────────────────────────
+const THUMB_UP   = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9.5 2L6.5 8v6H12l2-6H9.5V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="2.5" y="8" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>`;
+const THUMB_DOWN = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="transform:rotate(180deg)"><path d="M9.5 2L6.5 8v6H12l2-6H9.5V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="2.5" y="8" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>`;
+
+// ── Journey list ──────────────────────────────────────────────────────────────
+function renderJourneyList() {
+  const list = document.getElementById('jl-list');
+  list.innerHTML = MILESTONES.map((m, i) => `
+    <div class="jl-row" data-stage="${m.id}" role="button" tabindex="0">
+      <div class="jl-num">${i + 1}</div>
+      <div class="jl-bd">
+        <div class="jl-name">${m.name}</div>
+        <div class="jl-desc">${m.description}</div>
+      </div>
+      <span class="jl-arr">›</span>
     </div>
   `).join('');
 }
 
-// ── SVG helpers ───────────────────────────────────────────────────────────────
-const CARET_DOWN = `<svg width="12" height="7" viewBox="0 0 12 7" fill="none"><path d="M1 1L6 6L11 1" stroke="var(--lt)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const CARET_UP   = `<svg width="12" height="7" viewBox="0 0 12 7" fill="none"><path d="M1 6L6 1L11 6" stroke="var(--lt)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const THUMB_UP   = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9.5 2L6.5 8v6H12l2-6H9.5V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="2.5" y="8" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>`;
-const THUMB_DOWN = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="transform:rotate(180deg)"><path d="M9.5 2L6.5 8v6H12l2-6H9.5V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="2.5" y="8" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>`;
-
-// ── Milestone panel ───────────────────────────────────────────────────────────
-function renderMilestone(milestoneId) {
-  currentMilestone = milestoneId;
-  setDockMilestone(milestoneId);
-  renderStrip();
-  setDockChips(MILESTONES.find(m => m.id === milestoneId)?.chips || []);
-
-  const m = MILESTONES.find(m => m.id === milestoneId);
+// ── Stage detail ──────────────────────────────────────────────────────────────
+function openDetail(stageId) {
+  const m = MILESTONES.find(x => x.id === stageId);
   if (!m) return;
-
-  const idx = MILESTONES.indexOf(m);
-  const isFirst = idx === 0;
-
-  const savedChecks = JSON.parse(localStorage.getItem(`wtf_q_${milestoneId}`) || '[]');
-
-  // Questions section
-  const allQs = m.questions;
-  const visibleQs = allQs.slice(0, 4);
-  const hiddenQs = allQs.slice(4);
-
-  const qItem = (q, i) => `
-    <label class="q-item">
-      <input type="checkbox" class="q-chk" data-milestone="${milestoneId}" data-idx="${i}" ${savedChecks[i] ? 'checked' : ''}>
-      <span class="q-txt">${q}</span>
-    </label>`;
-
-  const questionsHtml = `
-    <div class="q-list">
-      ${visibleQs.map((q, i) => qItem(q, i)).join('')}
-      ${hiddenQs.length ? `
-        <div class="q-hidden">${hiddenQs.map((q, i) => qItem(q, i + 4)).join('')}</div>
-        <button class="acc-more" data-type="q">+ ${hiddenQs.length} more questions</button>
-      ` : ''}
-    </div>`;
-
-  // Wisdom section
-  const allW = m.wisdom;
-  const visibleW = allW.slice(0, 3);
-  const hiddenW = allW.slice(3);
-
-  const wItem = (w) => `
-    <div class="wisdom-item">
-      <div class="wisdom-quote">"${w.quote}"</div>
-      <div class="wisdom-count">mentioned by ${w.count.toLocaleString()} women</div>
-    </div>`;
-
-  const wisdomHtml = `
-    <div class="wisdom-list">
-      ${visibleW.map(wItem).join('')}
-      ${hiddenW.length ? `
-        <div class="wisdom-hidden">${hiddenW.map(wItem).join('')}</div>
-        <button class="acc-more" data-type="w">+ ${hiddenW.length} more insights</button>
-      ` : ''}
-    </div>`;
-
-  // Resources section
-  const resourcesHtml = `
-    <div class="resource-list">
-      ${m.resources.map(r => `
-        <div class="resource-item">
-          <div class="resource-title">${r.title}</div>
-          <div class="resource-desc">${r.desc}</div>
-        </div>`).join('')}
-    </div>`;
-
-  const fbRow = (section) => `
-    <div class="acc-fb" data-milestone="${milestoneId}" data-section="${section}">
-      <span class="acc-fb-lbl">Was this helpful?</span>
-      <div class="acc-fb-btns">
-        <button class="fb-btn up" title="Yes, helpful">${THUMB_UP}</button>
-        <button class="fb-btn dn" title="Not helpful">${THUMB_DOWN}</button>
-      </div>
-    </div>
-    <div class="fb-form" hidden>
-      <textarea class="fb-txt" rows="2" placeholder="What's working?"></textarea>
-      <div class="fb-acts">
-        <button class="fb-skip">Skip</button>
-        <button class="fb-submit">Submit</button>
-      </div>
-    </div>`;
-
-  const accSection = (section, title, info, bodyHtml, defaultOpen) => `
-    <div class="acc${defaultOpen ? ' open' : ''}" data-section="${section}">
-      <div class="acc-hdr">
-        <div class="acc-meta">
-          <div class="acc-title">${title}</div>
-          <div class="acc-info">${info}</div>
-        </div>
-        <div class="acc-toggle">${CARET_DOWN}</div>
-      </div>
-      <div class="acc-body">
-        ${bodyHtml}
-        ${fbRow(section)}
-      </div>
-    </div>`;
-
-  const illSrc = MILESTONE_ILLUSTRATIONS[m.dbId];
-  const illHtml = illSrc
-    ? `<div class="ms-ill-wrap"><img src="${illSrc}" class="ms-ill" alt=""></div>`
-    : '';
-
-  document.getElementById('ms-panel').innerHTML = `
-    <div class="ms-card">
-      <div class="ms-card-hdr">
-        ${illHtml}
-        <div class="ms-milestone-label${isFirst ? '' : ' inactive'}">
-          ${isFirst ? 'Milestone 1 · You are here' : `Milestone ${idx + 1}`}
-        </div>
-        <div class="ms-milestone-name">${m.name}</div>
-        <div class="ms-milestone-desc">${m.description}</div>
-      </div>
-      ${accSection('questions',
-        'Questions to ask your provider',
-        `${allQs.length} questions, drawn from what women wish they'd asked`,
-        questionsHtml,
-        true
-      )}
-      ${accSection('wisdom',
-        'What women wish they\'d known',
-        `${allW.length} insights from the community`,
-        wisdomHtml,
-        false
-      )}
-      ${accSection('resources',
-        'Resources for this stage',
-        `${m.resources.length} articles, tools, and references`,
-        resourcesHtml,
-        false
-      )}
-    </div>`;
+  viewStageId = stageId;
+  currentTab = 'questions';
+  document.getElementById('dt-crumb-name').textContent = m.name;
+  document.getElementById('dt-title').textContent = m.name;
+  document.getElementById('dt-desc').textContent = m.description;
+  dockChat.setChips(m.chips || []);
+  renderTabs();
+  renderTabBody();
+  collapseDock();
+  go('s-detail');
 }
 
-// ── Panel event delegation (wired once in init) ───────────────────────────────
+function renderTabs() {
+  document.querySelectorAll('#dt-tabs .dt-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === currentTab)
+  );
+}
 
-function handlePanelClick(e) {
-  // Accordion toggle
-  const hdr = e.target.closest('.acc-hdr');
-  if (hdr) {
-    const acc = hdr.closest('.acc');
-    acc.classList.toggle('open');
-    return;
+const fbRow = (milestoneId, section) => `
+  <div class="acc-fb" data-milestone="${milestoneId}" data-section="${section}">
+    <span class="acc-fb-lbl">Was this helpful?</span>
+    <div class="acc-fb-btns">
+      <button class="fb-btn up" title="Yes, helpful">${THUMB_UP}</button>
+      <button class="fb-btn dn" title="Not helpful">${THUMB_DOWN}</button>
+    </div>
+  </div>
+  <div class="fb-form" hidden>
+    <textarea class="fb-txt" rows="2" placeholder="What's working?"></textarea>
+    <div class="fb-acts">
+      <button class="fb-skip">Skip</button>
+      <button class="fb-submit">Submit</button>
+    </div>
+  </div>`;
+
+function renderTabBody() {
+  const m = MILESTONES.find(x => x.id === viewStageId);
+  if (!m) return;
+
+  let html = '';
+  if (currentTab === 'questions') {
+    html = `<div class="q-list">${m.questions.map(q => `
+      <div class="q-row"><span class="q-dot">•</span><span class="q-txt">${q}</span></div>`).join('')}
+    </div>`;
+  } else if (currentTab === 'wisdom') {
+    html = `<div class="wisdom-list">${m.wisdom.map(w => `
+      <div class="wisdom-item">
+        <div class="wisdom-quote">"${w.quote}"</div>
+        <div class="wisdom-count">mentioned by ${w.count.toLocaleString()} women</div>
+      </div>`).join('')}
+    </div>`;
+  } else {
+    html = `<div class="resource-list">${m.resources.map(r => `
+      <div class="resource-item">
+        <div class="resource-title">${r.title}</div>
+        <div class="resource-desc">${r.desc}</div>
+      </div>`).join('')}
+    </div>`;
   }
 
-  // Show more questions/wisdom
-  const more = e.target.closest('.acc-more');
-  if (more) {
-    const hidden = more.previousElementSibling;
-    if (hidden) hidden.style.display = 'block';
-    more.remove();
-    return;
-  }
+  document.getElementById('dt-body').innerHTML = html + fbRow(viewStageId, currentTab);
+}
 
-  // Feedback thumbs
+// ── Tab-content feedback (delegated) ──────────────────────────────────────────
+function handleBodyClick(e) {
   const fbBtn = e.target.closest('.fb-btn');
   if (fbBtn) {
     const accFb = fbBtn.closest('.acc-fb');
@@ -509,11 +433,12 @@ function handlePanelClick(e) {
     return;
   }
 
-  // Feedback submit
-  if (e.target.classList.contains('fb-submit')) {
+  if (e.target.classList.contains('fb-submit') || e.target.classList.contains('fb-skip')) {
     const fbForm = e.target.closest('.fb-form');
     const accFb = fbForm.previousElementSibling;
-    const text = fbForm.querySelector('.fb-txt').value.trim();
+    const text = e.target.classList.contains('fb-submit')
+      ? fbForm.querySelector('.fb-txt').value.trim()
+      : null;
     logFeedback({
       milestone: accFb.dataset.milestone,
       section: accFb.dataset.section,
@@ -521,30 +446,7 @@ function handlePanelClick(e) {
       text,
     });
     showThanks(accFb, fbForm);
-    return;
   }
-
-  // Feedback skip
-  if (e.target.classList.contains('fb-skip')) {
-    const fbForm = e.target.closest('.fb-form');
-    const accFb = fbForm.previousElementSibling;
-    logFeedback({
-      milestone: accFb.dataset.milestone,
-      section: accFb.dataset.section,
-      verdict: fbForm.dataset.verdict,
-      text: null,
-    });
-    showThanks(accFb, fbForm);
-    return;
-  }
-}
-
-function handlePanelChange(e) {
-  if (!e.target.classList.contains('q-chk')) return;
-  const milestoneId = e.target.dataset.milestone;
-  const checks = [...document.querySelectorAll(`.q-chk[data-milestone="${milestoneId}"]`)]
-    .map(c => c.checked);
-  localStorage.setItem(`wtf_q_${milestoneId}`, JSON.stringify(checks));
 }
 
 function showThanks(accFb, fbForm) {
@@ -585,7 +487,7 @@ async function logFeedback({ milestone, section, verdict, text }) {
 function expandDock() {
   dockExpanded = true;
   document.getElementById('dock-panel').classList.add('open');
-  document.getElementById('jn-overlay').classList.add('show');
+  document.getElementById('dt-overlay').classList.add('show');
   document.getElementById('dock-pill').style.visibility = 'hidden';
   document.getElementById('dock-inp').focus();
 }
@@ -593,54 +495,69 @@ function expandDock() {
 function collapseDock() {
   dockExpanded = false;
   document.getElementById('dock-panel').classList.remove('open');
-  document.getElementById('jn-overlay').classList.remove('show');
+  document.getElementById('dt-overlay').classList.remove('show');
   document.getElementById('dock-pill').style.visibility = '';
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 function init() {
   loadMilestoneInsights();
-  initDockChat('active');
+  mainChat.setChips(STARTER_CHIPS);
 
-  // Milestone panel — single delegated listener
-  const panel = document.getElementById('ms-panel');
-  panel.addEventListener('click', handlePanelClick);
-  panel.addEventListener('change', handlePanelChange);
+  const activate = (el, fn) => {
+    el.addEventListener('click', fn);
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); }
+    });
+  };
 
-  // S0 → S1
+  // Onboarding funnel: S0 → S1 → S2 → Home
   document.getElementById('s0-cta').addEventListener('click', () => go('s1'));
-
-  // S1 → S2
-  const card = document.getElementById('card-active');
-  card.addEventListener('click', () => go('s2'));
-  card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') go('s2'); });
-
-  // S2 back → S1, CTA → S3
+  activate(document.getElementById('card-active'), () => go('s2'));
   document.getElementById('cb-back').addEventListener('click', () => go('s1'));
-  document.getElementById('cb-cta').addEventListener('click', () => {
-    go('s3');
-    // Render initial milestone on first visit
-    if (!document.getElementById('ms-panel').children.length) {
-      renderMilestone(currentMilestone);
-    }
+  document.getElementById('cb-cta').addEventListener('click', () => go('s-home'));
+
+  // Home cards
+  activate(document.getElementById('hm-journey'), () => {
+    renderJourneyList();
+    go('s-journey');
+  });
+  activate(document.getElementById('hm-chat'), () => go('s-chat'));
+
+  // Journey list
+  document.getElementById('jn-back').addEventListener('click', () => go('s-home'));
+  document.getElementById('jl-list').addEventListener('click', e => {
+    const row = e.target.closest('.jl-row');
+    if (row) openDetail(row.dataset.stage);
+  });
+  document.getElementById('jl-list').addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const row = e.target.closest('.jl-row');
+    if (row) { e.preventDefault(); openDetail(row.dataset.stage); }
   });
 
-  // S3 back → S2
-  document.getElementById('jn-back').addEventListener('click', () => {
+  // Stage detail
+  document.getElementById('dt-back').addEventListener('click', () => {
     collapseDock();
-    go('s2');
+    go('s-journey');
   });
-
-  // Milestone strip clicks (event delegation)
-  document.getElementById('ms-strip').addEventListener('click', e => {
-    const pill = e.target.closest('.ms-pill');
-    if (pill) renderMilestone(pill.dataset.milestone);
+  document.getElementById('dt-tabs').addEventListener('click', e => {
+    const tab = e.target.closest('.dt-tab');
+    if (!tab || tab.dataset.tab === currentTab) return;
+    currentTab = tab.dataset.tab;
+    renderTabs();
+    renderTabBody();
   });
+  const body = document.getElementById('dt-body');
+  body.addEventListener('click', handleBodyClick);
 
   // Chat dock open/close
   document.getElementById('dock-pill').addEventListener('click', expandDock);
   document.getElementById('dock-close').addEventListener('click', collapseDock);
-  document.getElementById('jn-overlay').addEventListener('click', collapseDock);
+  document.getElementById('dt-overlay').addEventListener('click', collapseDock);
+
+  // Full-screen chat
+  document.getElementById('ch-back').addEventListener('click', () => go('s-home'));
 }
 
 init();

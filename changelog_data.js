@@ -5,6 +5,30 @@
 export const CHANGELOG = [
   {
     date: "August 3, 2026",
+    title: "The app got a home: redesign around Home, Journey, and Chat",
+    userSummary: "The app has a new mobile-first structure. After onboarding you land on a home screen with two clear paths — browse the journey stage by stage, or ask the community anything — instead of being dropped into a single dense milestone page.",
+    userBullets: [
+      "New home screen with two entry cards: 'Your journey' and 'Ask anything'",
+      "The journey is now a scrollable list of 10 stage cards instead of a horizontal strip of abbreviations",
+      "Each stage page uses three tabs — Questions to explore / What women wish they knew / Resources — instead of stacked accordions",
+      "The chatbot has a full-screen home of its own, one tap from the home screen, plus the familiar dock on every stage page",
+      "Works on desktop web too — renders as a centered mobile-width column",
+    ],
+    buildersNote: `
+      <p><strong>The problem:</strong> The old journey screen tried to do everything at once — a milestone strip, three accordions, and a chat dock stacked on one screen. Fine on a laptop, cramped on a phone.</p>
+
+      <p><strong>The process:</strong> This redesign started as an interactive prototype in Claude Design (claude.ai/design), which let me tap through Home → Journey → Stage detail → Chat and feel the flow before committing a line of production code. Prototyping the IA separately from implementing it was the single best call of this build.</p>
+
+      <p><strong>The implementation decision:</strong> The design has <em>two</em> chat surfaces — a full-screen chat and the stage-page dock — and the old chat code was hardwired to one set of DOM elements. Options: duplicate the chat logic per surface, or refactor into a factory. Final call: one <code>createChatSurface()</code> factory that binds streaming, markdown rendering, and telemetry to any set of chat elements. Each surface keeps its own conversation history.</p>
+
+      <p><strong>Two judgment calls that deviated from the prototype:</strong> (1) Dropped the "you are on stage X" indicator — there's no way for users to set their stage yet, so a hardcoded one would just be wrong for most people. (2) Kept dock conversations alive when switching stages — the prototype wiped them, but deleting someone's chat because they navigated felt like a bug, not a feature.</p>
+
+      <p><strong>Watch out for:</strong> Chat is now one tap from home instead of being gated behind the editorial, so the original "editorial must lead" principle is softened. Worth watching whether users skip the journey content entirely and what that does to answer quality expectations.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "August 3, 2026",
     title: "The receipts are in the repo: data pipeline + eval trail backed up",
     userSummary: "Nothing visible changed in the app — this one is about making sure the work behind it can't be lost. The pipeline that builds the 10,000+ conversation corpus and the full experiment trail behind the retrieval overhaul now live in the repo.",
     userBullets: [
