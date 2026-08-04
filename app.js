@@ -511,11 +511,13 @@ function init() {
     });
   };
 
-  // Onboarding funnel: S0 → S1 → S2 → Home
-  document.getElementById('s0-cta').addEventListener('click', () => go('s1'));
-  activate(document.getElementById('card-active'), () => go('s2'));
-  document.getElementById('cb-back').addEventListener('click', () => go('s1'));
-  document.getElementById('cb-cta').addEventListener('click', () => go('s-home'));
+  // Landing → Home
+  document.getElementById('s0-cta').addEventListener('click', () => go('s-home'));
+
+  // Brand (top-left on every screen) → back to landing
+  document.querySelectorAll('[data-brand]').forEach(el =>
+    activate(el, () => { collapseDock(); go('s0'); })
+  );
 
   // Home cards
   activate(document.getElementById('hm-journey'), () => {

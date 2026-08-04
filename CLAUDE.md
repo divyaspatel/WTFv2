@@ -244,16 +244,14 @@ You have access to real community experience from women who've posted on r/eggfr
 ## Screen Flow
 
 ```
-S0: Homepage (landing)
-  └─► S1: Persona Selector
-        └─► S2: Credibility Bridge ("You're not alone")
-              └─► S3: Home (#s-home — "Welcome back", two entry cards)
-                    ├─► S4: Journey (#s-journey — 10-stage list)
-                    │     └─► S5: Stage Detail (#s-detail — tabs: Questions / Wisdom / Resources + chat dock)
-                    └─► S6: Full-screen Chat (#s-chat — RAG-grounded)
+S0: Landing (#s0 — brand, headline, "See for yourself" CTA)
+  └─► S3: Home (#s-home — two entry cards)
+        ├─► S4: Journey (#s-journey — 10-stage list)
+        │     └─► S5: Stage Detail (#s-detail — tabs: Questions / Wisdom / Resources + chat dock)
+        └─► S6: Full-screen Chat (#s-chat — RAG-grounded)
 ```
 
-The onboarding funnel (S0–S2) still leads. From Home, chat is one tap away (a deliberate Aug 2026 redesign decision — the old "editorial must lead" gate is softened; watch whether users skip journey content). Both chat surfaces (S6 and the S5 dock) are built from `createChatSurface()` in chat.js.
+The persona-selector and credibility-bridge screens were removed (Aug 2026) — the landing CTA now goes directly to Home. Every screen after landing has a consistent brand block top-left (`[data-brand]`, wired in app.js) that returns to S0 from anywhere. Both chat surfaces (S6 and the S5 dock) are built from `createChatSurface()` in chat.js.
 
 ---
 

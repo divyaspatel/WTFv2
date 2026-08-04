@@ -20,262 +20,41 @@
   <!-- Screen container -->
   <div id="sc">
 
-    <!-- S0: Homepage -->
+    <!-- S0: Landing -->
     <div id="s0" class="scr on">
-      <div class="s0-wrap">
+      <div class="ld-wrap">
 
-        <div class="s0-top">
-          <div class="s0-brand">
-            <div class="s0-wm-row">
-              <span class="s0-wm">WTF</span>
-              <span class="s0-beta">Beta</span>
-            </div>
-            <div class="s0-subtag">What the Fertility</div>
+        <div class="brand lg" data-brand role="link" tabindex="0" aria-label="WTF — back to start">
+          <div class="brand-row">
+            <span class="brand-wm">WTF</span>
+            <span class="brand-beta">Beta</span>
           </div>
-
-          <div class="s0-hero-wrap">
-            <img src="hero.png" class="s0-hero" alt="">
-          </div>
-
-          <h1 class="s0-hed">Navigating egg freezing is overwhelming. We made it less so.</h1>
-
-          <div class="s0-bdy">
-            <p>WTF turns thousands of real women's forum experiences into a guide that meets you where you are.</p>
-          </div>
-
-          <div class="s0-learn">Join the WTF platform to learn:</div>
-          <ul class="s0-list">
-            <li>What it really costs (and how to spend less)</li>
-            <li>How to walk in prepared — not blindsided</li>
-            <li>The answers to emotional questions you don't really get from a clinic</li>
-          </ul>
-
-          <div class="s0-tags">✦ Free during Beta &nbsp;·&nbsp; Built from real women's experiences &nbsp;·&nbsp; No judgment</div>
+          <div class="brand-sub">What the Fertility</div>
         </div>
 
-        <div class="s0-foot">
-          <button class="s0-cta" id="s0-cta">Try out WTF in Beta</button>
-          <p class="s0-social">Join the women already navigating their journey with WTF</p>
-          <p class="s0-notice">Your conversations are anonymous and never tied to your identity. <span class="s0-link">Terms of Use</span></p>
+        <div class="ld-mid">
+          <h1 class="ld-hed">Some things need to be figured out on your own. Freezing your eggs isn't one of them.</h1>
+          <p class="ld-bdy">Answers to your questions pulled from women's real experiences. Thousands of posts on egg and embryo freezing — turned into a guide that meets you where you are.</p>
+        </div>
+
+        <div class="ld-foot">
+          <button class="ld-cta" id="s0-cta">See for yourself <span>→</span></button>
+          <p class="ld-notice">Anonymous. No sign-up. Not medical advice — just the lived experiences, from women who've done this.</p>
         </div>
 
       </div>
     </div><!-- #s0 -->
 
 
-    <!-- S1: Persona selector -->
-    <div id="s1" class="scr">
-      <div class="s1-wrap">
-        <div class="s1-head">
-          <div class="wm">
-            <span class="wm-w" style="font-size:25px">WTF</span>
-            <span class="wm-f">What the<br>Fertility</span>
-          </div>
-          <div class="s1-hed">Where are you on<br>your journey?</div>
-          <div class="s1-sub">No account needed. Pick what fits — we'll show you what matters most right now.</div>
-        </div>
-
-        <div class="s1-cards">
-
-          <!-- Considering (coming soon) -->
-          <div class="pc dim" aria-disabled="true">
-            <div class="pc-ill">
-              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="33" cy="33" r="33" fill="#F5E8C8"/>
-                <ellipse cx="33" cy="22" rx="17" ry="15" fill="#2E1C0F"/>
-                <circle cx="18" cy="25" r="7" fill="#2E1C0F"/>
-                <circle cx="48" cy="25" r="7" fill="#2E1C0F"/>
-                <circle cx="12" cy="31" r="4" fill="#2E1C0F"/>
-                <circle cx="54" cy="31" r="4" fill="#2E1C0F"/>
-                <ellipse cx="33" cy="38" rx="12" ry="13" fill="#8B5E3C"/>
-                <rect x="29" y="48" width="8" height="8" rx="2" fill="#8B5E3C"/>
-                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#C1440E" opacity=".55"/>
-                <circle cx="29" cy="36" r="1.4" fill="#1E0F08"/>
-                <circle cx="37" cy="36" r="1.4" fill="#1E0F08"/>
-                <path d="M29 43 Q33 45 37 43" stroke="#6B3E22" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="pc-bd">
-              <div class="pc-tag">Considering</div>
-              <div class="pc-ttl">Should I freeze?</div>
-              <div class="pc-dsc">Exploring whether egg or embryo freezing is right for me</div>
-            </div>
-            <div class="cs-tag">Soon</div>
-          </div>
-
-          <!-- Active / getting started (live) -->
-          <div class="pc live" id="card-active" role="button" tabindex="0" aria-label="I'm in — what do I do?">
-            <div class="pc-ill">
-              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="33" cy="33" r="33" fill="#ECF1E8"/>
-                <ellipse cx="33" cy="19" rx="13" ry="9.5" fill="#2C1810"/>
-                <path d="M20 25 C17 34 16 47 19 57" stroke="#2C1810" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-                <path d="M46 25 C49 34 50 47 47 57" stroke="#2C1810" stroke-width="5.5" stroke-linecap="round" fill="none"/>
-                <path d="M20 30 C17.5 33 17 36 18 39" stroke="#1A0C06" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
-                <path d="M46 30 C48.5 33 49 36 48 39" stroke="#1A0C06" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".5"/>
-                <ellipse cx="33" cy="36" rx="12" ry="14" fill="#C4936A"/>
-                <rect x="29" y="48" width="8" height="8" rx="2" fill="#C4936A"/>
-                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#7A9268" opacity=".75"/>
-                <circle cx="29" cy="34" r="1.4" fill="#1E0F08"/>
-                <circle cx="37" cy="34" r="1.4" fill="#1E0F08"/>
-                <path d="M27 42 Q33 47 39 42" stroke="#9A6840" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="pc-bd">
-              <div class="pc-tag">Getting started</div>
-              <div class="pc-ttl">I'm in — what do I do?</div>
-              <div class="pc-dsc">I've decided to freeze but need help with next steps</div>
-            </div>
-            <span class="pc-arr">›</span>
-          </div>
-
-          <!-- In process (coming soon) -->
-          <div class="pc dim" aria-disabled="true">
-            <div class="pc-ill">
-              <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="33" cy="33" r="33" fill="#F5EBE5"/>
-                <circle cx="26" cy="21" r="6.5" fill="#4A3020"/>
-                <circle cx="33" cy="18" r="7.5" fill="#4A3020"/>
-                <circle cx="40" cy="21" r="6.5" fill="#4A3020"/>
-                <circle cx="22" cy="27" r="5" fill="#4A3020"/>
-                <circle cx="44" cy="27" r="5" fill="#4A3020"/>
-                <circle cx="29" cy="18" r="4" fill="#3A2415"/>
-                <circle cx="37" cy="17" r="4" fill="#3A2415"/>
-                <ellipse cx="33" cy="38" rx="12" ry="13" fill="#D9A882"/>
-                <rect x="29" y="48" width="8" height="8" rx="2" fill="#D9A882"/>
-                <ellipse cx="33" cy="63" rx="17" ry="9" fill="#7A9268" opacity=".55"/>
-                <circle cx="29" cy="36" r="1.4" fill="#1E0F08"/>
-                <circle cx="37" cy="36" r="1.4" fill="#1E0F08"/>
-                <path d="M27 44 Q33 50 39 44" stroke="#B07840" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="pc-bd">
-              <div class="pc-tag">In process</div>
-              <div class="pc-ttl">I'm doing it right now</div>
-              <div class="pc-dsc">Currently in stimulation, monitoring, or retrieval</div>
-            </div>
-            <div class="cs-tag">Soon</div>
-          </div>
-
-        </div>
-      </div>
-    </div><!-- #s1 -->
-
-
-    <!-- S2: Credibility Bridge ("You're not alone") -->
-    <div id="s2" class="scr">
-      <div class="cb-hd">
-        <button class="bk" id="cb-back" aria-label="Back">←</button>
-        <div class="wm">
-          <span class="wm-w" style="font-size:20px">WTF</span>
-          <span class="wm-f">What the<br>Fertility</span>
-        </div>
-        <div style="width:32px"></div>
-      </div>
-
-      <div class="cb-scroll">
-
-        <!-- 1. Opener -->
-        <div class="cb-opener">
-          <h1 class="cb-hed">You've made the decision — and you're not alone.</h1>
-          <p class="cb-sub">Here's what thousands of women before you said about this exact moment.</p>
-        </div>
-
-        <!-- 2. Fear → Reality pairs -->
-        <div class="cb-sec">
-          <div class="cb-sec-hd"><span>What they feared → what actually happened</span></div>
-          <div class="fr-list">
-
-            <div class="fr-card">
-              <div class="fr-col">
-                <div class="fr-tag">Feared</div>
-                <div class="fr-body"><strong>68%</strong> asked how painful the injections really are</div>
-              </div>
-              <div class="fr-arr">→</div>
-              <div class="fr-col">
-                <div class="fr-tag">Reality</div>
-                <div class="fr-body"><strong>78%</strong> said it was more manageable than expected</div>
-              </div>
-            </div>
-
-            <div class="fr-card">
-              <div class="fr-col">
-                <div class="fr-tag">Feared</div>
-                <div class="fr-body"><strong>49%</strong> didn't know how to find the right clinic</div>
-              </div>
-              <div class="fr-arr">→</div>
-              <div class="fr-col">
-                <div class="fr-tag">Reality</div>
-                <div class="fr-body"><strong>63%</strong> consulted more than one — and said it was worth it</div>
-              </div>
-            </div>
-
-            <div class="fr-card">
-              <div class="fr-col">
-                <div class="fr-tag">Feared</div>
-                <div class="fr-body"><strong>29%</strong> worried about the emotional weight</div>
-              </div>
-              <div class="fr-arr">→</div>
-              <div class="fr-col">
-                <div class="fr-tag">Reality</div>
-                <div class="fr-body"><strong>71%</strong> said the waiting was harder than the physical part</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- 3. By the numbers -->
-        <div class="cb-sec">
-          <div class="cb-sec-hd"><span>The community's journey, by the numbers</span></div>
-          <div class="num-grid">
-            <div class="num-card">
-              <div class="num-val">10–14</div>
-              <div class="num-desc">days of stimulation, first injection to retrieval</div>
-            </div>
-            <div class="num-card">
-              <div class="num-val">2.1</div>
-              <div class="num-desc">average rounds for women in their early 30s</div>
-            </div>
-            <div class="num-card">
-              <div class="num-val">~$12K</div>
-              <div class="num-desc">median out-of-pocket per cycle, excl. meds</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Bridge card -->
-        <div class="cb-sec cb-sec-last">
-          <div class="bridge-card">
-            <h3 class="bridge-hed">This is the surface. Your journey goes deeper.</h3>
-            <p class="bridge-bdy">What you just read came from 10,000+ conversations with women who've been where you are. Next, we'll walk it step by step — and at every step, you'll see what they wish they'd known.</p>
-            <div class="bridge-strip">
-              <div class="bs-step">Prep</div>
-              <div class="bs-arr">→</div>
-              <div class="bs-step">Cycle</div>
-              <div class="bs-arr">→</div>
-              <div class="bs-step">After</div>
-            </div>
-            <ul class="bridge-list">
-              <li>Questions to ask your medical provider</li>
-              <li>What women wish they'd known</li>
-              <li>Resources for this stage</li>
-              <li>Ask the community anything</li>
-            </ul>
-            <button class="cb-cta" id="cb-cta">Start your journey →</button>
-          </div>
-        </div>
-
-      </div>
-    </div><!-- #s2 -->
-
-
     <!-- S3: Home -->
     <div id="s-home" class="scr">
       <div class="hm-hd">
-        <div class="wm">
-          <span class="wm-w" style="font-size:20px">WTF</span>
-          <span class="wm-f">What the<br>Fertility</span>
+        <div class="brand" data-brand role="link" tabindex="0" aria-label="WTF — back to start">
+          <div class="brand-row">
+            <span class="brand-wm">WTF</span>
+            <span class="brand-beta">Beta</span>
+          </div>
+          <div class="brand-sub">What the Fertility</div>
         </div>
         <div class="hm-av" aria-hidden="true">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#52443D" stroke-width="1.6"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke="#52443D" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -283,8 +62,6 @@
       </div>
 
       <div class="hm-body">
-        <div class="hm-welcome">Welcome back</div>
-
         <div class="hm-cards">
 
           <div class="hm-card" id="hm-journey" role="button" tabindex="0" aria-label="Your journey">
@@ -316,17 +93,21 @@
 
     <!-- S4: Journey (stage list) -->
     <div id="s-journey" class="scr">
-      <div class="jn-hd">
-        <button class="bk" id="jn-back" aria-label="Back">←</button>
-        <div class="wm">
-          <span class="wm-w" style="font-size:20px">WTF</span>
-          <span class="wm-f">What the<br>Fertility</span>
+      <div class="pg-hd">
+        <div class="brand" data-brand role="link" tabindex="0" aria-label="WTF — back to start">
+          <div class="brand-row">
+            <span class="brand-wm">WTF</span>
+            <span class="brand-beta">Beta</span>
+          </div>
+          <div class="brand-sub">What the Fertility</div>
         </div>
-        <div style="width:32px"></div>
       </div>
 
       <div class="jn-phdr">
-        <h2 class="jn-title">Your journey</h2>
+        <div class="ph-row">
+          <button class="bk" id="jn-back" aria-label="Back">←</button>
+          <h2 class="jn-title">Your journey</h2>
+        </div>
         <p class="jn-sub">Common paths real women took, broken into stages. Tap a stage to open it.</p>
       </div>
 
@@ -341,6 +122,16 @@
 
       <!-- Dim overlay shown when dock is expanded -->
       <div class="jn-overlay" id="dt-overlay"></div>
+
+      <div class="pg-hd">
+        <div class="brand" data-brand role="link" tabindex="0" aria-label="WTF — back to start">
+          <div class="brand-row">
+            <span class="brand-wm">WTF</span>
+            <span class="brand-beta">Beta</span>
+          </div>
+          <div class="brand-sub">What the Fertility</div>
+        </div>
+      </div>
 
       <div class="dt-hd">
         <button class="bk" id="dt-back" aria-label="Back">←</button>
@@ -407,6 +198,16 @@
 
     <!-- S6: Full-screen chat -->
     <div id="s-chat" class="scr">
+      <div class="pg-hd">
+        <div class="brand" data-brand role="link" tabindex="0" aria-label="WTF — back to start">
+          <div class="brand-row">
+            <span class="brand-wm">WTF</span>
+            <span class="brand-beta">Beta</span>
+          </div>
+          <div class="brand-sub">What the Fertility</div>
+        </div>
+      </div>
+
       <div class="ch-hd">
         <button class="bk" id="ch-back" aria-label="Back">←</button>
         <div class="ch-hd-info">

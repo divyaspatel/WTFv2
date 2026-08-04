@@ -13,6 +13,22 @@
 
 ---
 
+## Shipped August 4, 2026 — Cut the funnel: landing goes straight to Home
+
+**What changed for users:** The path from landing to the app is now one tap instead of three. The persona-selector screen and the "You've made the decision" credibility screen are gone — the landing page's "See for yourself" button drops you directly into Home. Every screen also now shows a consistent WTF/Beta brand mark in the top-left that takes you back to the landing page from anywhere.
+
+**User impact bullets:**
+- Landing page CTA goes straight to Home — no persona pick, no credibility-bridge stats screen in between
+- Home no longer says "Welcome back" or names a current journey stage (there's no way for the app to know that yet)
+- Every inner screen (Home, Journey, Stage detail, Chat) has the same WTF/Beta wordmark top-left; tapping it always returns to the landing page
+
+**Technical decisions:**
+Two weeks after shipping the Home/Journey/Chat redesign, the persona-selector and credibility-bridge screens were the next thing in the way — they existed to justify unlocking the chatbot behind an editorial gate, a gate the last redesign had already started softening. With chat one tap from Home regardless, the extra two screens were just friction before the app's actual value. Options were: keep them as an optional "learn more" detour, or cut them outright. Final call: cut outright — every screen that isn't Home, Journey, Detail, or Chat is a screen a first-time user has to get through before they see anything useful, and neither of the two removed screens had a clear job once the gate was gone. The brand-mark decision was smaller: with three fewer screens to navigate between, users needed one predictable way back to the start, so the wordmark became clickable everywhere instead of a decorative label duplicated per screen. Watch out for: the "you're on: [stage]" copy on the old Home card is gone for the same reason it was removed last time — there's still no mechanism for a user to set or the app to infer their current stage, so don't reintroduce a hardcoded guess.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped August 3, 2026 — The app got a home: redesign around Home, Journey, and Chat
 
 **What changed for users:** The app has a new mobile-first structure. After onboarding you land on a home screen with two clear paths — browse the journey stage by stage, or ask the community anything — instead of being dropped into a single dense milestone page.
