@@ -13,6 +13,24 @@
 
 ---
 
+## Shipped August 4, 2026 — Visual cleanup: consistent nav, quieter home cards
+
+**What changed for users:** Small polish pass on the redesign that shipped earlier today. The "Ask anything" card no longer looks visually different from "Your journey" — both read as equal options now. The chat icon switched from a black square to the same orange-on-cream treatment as the journey icon, so the two cards feel like a matched set. The human silhouette icon that sat in the home screen's top-right corner is gone; that spot is now the "What's New" link, and it's in the same spot on every screen, not just buried in a footer. The landing page's subhead is shorter.
+
+**User impact bullets:**
+- "Ask anything" card no longer has a highlighted border — both home cards read as equal-weight options
+- Chat icon is now orange line-art on a cream circle, matching the journey icon instead of standing out as a black square
+- The top-right "human" icon on Home is gone; "What's New (Release Notes) →" lives there instead
+- "What's New" now appears top-right on every screen (landing, home, journey, detail, chat) instead of only in a footer at the bottom of the page
+- Landing page subtext trimmed to one sentence
+
+**Technical decisions:**
+None of this changed behavior — it's a visual-consistency pass after shipping the bigger nav change earlier today. Two things stood out on a second look: the "Ask anything" card had an orange border and a black-square icon that made it read as the "important" choice, which wasn't the intent — both cards are meant to be equal entry points. And the footer's "What's New" link only lived below the fold on the landing page, easy to miss and inconsistent with the WTF/Beta brand mark's consistent top-left position on every screen. Final call: strip the accent styling from the chat card entirely, and promote "What's New" into the header row opposite the brand mark on every screen, replacing the old fixed-footer instance and the homepage's now-orphaned human icon. Watch out for: on narrow screens the header row is now doing more work (brand block + a wrapping link) — if a future screen adds a third header element, this two-column layout will need to become three.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped August 4, 2026 — Cut the funnel: landing goes straight to Home
 
 **What changed for users:** The path from landing to the app is now one tap instead of three. The persona-selector screen and the "You've made the decision" credibility screen are gone — the landing page's "See for yourself" button drops you directly into Home. Every screen also now shows a consistent WTF/Beta brand mark in the top-left that takes you back to the landing page from anywhere.
