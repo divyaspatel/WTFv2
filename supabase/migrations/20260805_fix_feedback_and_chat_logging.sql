@@ -20,7 +20,16 @@
 alter table public.feedback_events
   add column if not exists session_id text;
 
--- 2. Allow the app's anon key to insert feedback events.
+-- 2. Grant the base table-level privilege. RLS policies only decide WHICH
+--    rows a role can touch once it's already allowed to perform the
+--    operation at all — without this GRANT, `anon` is blocked before RLS
+--    is even evaluated, which produces the exact same 42501 error as a
+--    missing policy. (anon already has SELECT here, which is why reads
+--    have always worked — INSERT is a separate privilege.)
+grant insert on public.feedback_events to anon;
+grant insert on public.chat_messages to anon;
+
+-- 3. Allow the app's anon key to insert feedback events.
 --    (Postgres has no `create policy if not exists` — drop-then-create
 --    is the standard idempotent pattern.)
 drop policy if exists "anon can insert feedback_events" on public.feedback_events;
@@ -30,7 +39,7 @@ create policy "anon can insert feedback_events"
   to anon
   with check (true);
 
--- 3. Allow the app's anon key to insert chat message logs.
+-- 4. Allow the app's anon key to insert chat message logs.
 drop policy if exists "anon can insert chat_messages" on public.chat_messages;
 create policy "anon can insert chat_messages"
   on public.chat_messages
