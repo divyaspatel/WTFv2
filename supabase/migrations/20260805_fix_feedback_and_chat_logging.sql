@@ -21,14 +21,18 @@ alter table public.feedback_events
   add column if not exists session_id text;
 
 -- 2. Allow the app's anon key to insert feedback events.
-create policy if not exists "anon can insert feedback_events"
+--    (Postgres has no `create policy if not exists` — drop-then-create
+--    is the standard idempotent pattern.)
+drop policy if exists "anon can insert feedback_events" on public.feedback_events;
+create policy "anon can insert feedback_events"
   on public.feedback_events
   for insert
   to anon
   with check (true);
 
 -- 3. Allow the app's anon key to insert chat message logs.
-create policy if not exists "anon can insert chat_messages"
+drop policy if exists "anon can insert chat_messages" on public.chat_messages;
+create policy "anon can insert chat_messages"
   on public.chat_messages
   for insert
   to anon
