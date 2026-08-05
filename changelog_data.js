@@ -4,6 +4,29 @@
 
 export const CHANGELOG = [
   {
+    date: "August 5, 2026",
+    title: "One feedback widget, everywhere",
+    userSummary: "'Was this helpful?' now looks and behaves identically no matter where you see it — under a chat response in the stage-detail dock, under a chat response in the standalone chatbot, or under the tabs on a journey step. The thumbs are yellow line icons (no circle buttons), turn green or red when picked, and the label reads left-to-right in order: 'Was this helpful?' then the thumbs. The comment box only shows after picking a thumb, matches the width of the chat response above it, and there's one Submit button.",
+    userBullets: [
+      "'Was this helpful?' label sits directly before the thumbs, left-aligned, on every surface",
+      "Thumbs are yellow outline icons with no circular background; thumbs-up turns green when selected, thumbs-down turns red",
+      "Comment box placeholder is context-aware: 'What was helpful (optional)?' after 👍, 'What would be more useful (optional)?' after 👎",
+      "In chat, the comment box width now matches the response bubble above it instead of stretching wider",
+      "One 'Submit' button everywhere — the separate 'Skip' button on the journey-step feedback is gone",
+      "Submitting always shows 'Thanks for the feedback.'",
+    ],
+    buildersNote: `
+      <p><strong>The problem:</strong> the chatbot's feedback widget and the journey-step feedback widget were two separate implementations that had drifted — different markup, different CSS classes (<code>.mfb-*</code> vs <code>.fb-*</code>), different colors, different copy ("Thanks ✓" vs "Thanks for the feedback."). As the bubble-width bug from the day before showed, no shared source of truth meant a fix in one place silently didn't apply to the other.</p>
+
+      <p><strong>Options:</strong> keep patching both in parallel and hope they stay in sync, or collapse them into one component.</p>
+
+      <p><strong>Final call:</strong> pulled both into a single <code>createFeedbackWidget()</code> factory in a new <code>feedback.js</code>, imported by both <code>chat.js</code> (the two chat surfaces) and <code>app.js</code> (the journey-step tabs). The only thing that varies by context is the <code>onSubmit</code> callback each caller passes in — chat logs <code>question</code>/<code>bot_response</code> alongside the verdict, journey steps log <code>milestone</code>/<code>section</code> — plus one CSS scoping rule that caps the chat version's width to match the bubble above it. The color-changing thumbs also forced a decision: real 👍/👎 emoji can't be recolored via CSS, so both surfaces now use the same line-art SVG icons the journey-step widget already had, instead of emoji.</p>
+
+      <p><strong>Watch out for:</strong> since this is one shared component, a bug here shows up in three places at once instead of one — but a fix also lands in three places at once, which is the whole point.</p>
+    `,
+    blogUrl: null,
+  },
+  {
     date: "August 4, 2026",
     title: "Chat polish: wider bot bubbles, honest feedback prompts",
     userSummary: "Chat responses are easier to read, and giving feedback on a response is less committal. The chatbot's answer bubbles are noticeably wider in the stage-detail dock, matching the standalone chat. The typing indicator now says 'Give me a minute…'. And the response feedback widget no longer shows its comment box until you've actually picked a thumb.",

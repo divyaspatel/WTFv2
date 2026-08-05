@@ -3,6 +3,8 @@
 // Exposes createChatSurface(), a factory that binds the shared streaming/telemetry
 // logic to any set of chat DOM elements (full-screen chat + stage-detail dock).
 
+import { createFeedbackWidget } from './feedback.js';
+
 const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnc3hjbnhmc2F3cGxraWVvY2hrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MTA5NDUsImV4cCI6MjA4NzE4Njk0NX0.PGQMJv7fdRraBhatDIWp3s6qnksLxxDmPVsxr1bSOuw';
 const SUPABASE_URL = 'https://agsxcnxfsawplkieochk.supabase.co';
 const EDGE_URL = `${SUPABASE_URL}/functions/v1/wtf-chat`;
@@ -156,47 +158,12 @@ export function createChatSurface({ ids, getMilestone = () => null }) {
 
   // ── Per-response feedback widget ────────────────────────────────────────────
   function appendChatFeedback(msgDiv, question, response) {
-    const fb = document.createElement('div');
-    fb.className = 'msg-fb';
-    fb.innerHTML = `
-      <div class="mfb-btns">
-        <button class="mfb-btn up" aria-label="Helpful">👍</button>
-        <button class="mfb-btn dn" aria-label="Not helpful">👎</button>
-      </div>
-      <div class="mfb-form" hidden>
-        <input class="mfb-txt" type="text" placeholder="Your feedback on this response (optional)" maxlength="280">
-        <div class="mfb-acts">
-          <button class="mfb-send">Send</button>
-        </div>
-      </div>
-    `;
-
-    const upBtn = fb.querySelector('.mfb-btn.up');
-    const dnBtn = fb.querySelector('.mfb-btn.dn');
-    const form  = fb.querySelector('.mfb-form');
-    const txt   = fb.querySelector('.mfb-txt');
-    const send  = fb.querySelector('.mfb-send');
-    let verdict = null;
-
-    function selectVerdict(v) {
-      verdict = v;
-      upBtn.classList.toggle('selected', v === 'up');
-      dnBtn.classList.toggle('selected', v === 'down');
-      form.removeAttribute('hidden');
-      txt.focus();
-    }
-
-    function submit(comment) {
-      logChatFeedback(verdict, comment, question, response);
-      fb.innerHTML = '<span class="mfb-thanks">Thanks ✓</span>';
-    }
-
-    upBtn.addEventListener('click', () => selectVerdict('up'));
-    dnBtn.addEventListener('click', () => selectVerdict('down'));
-    send.addEventListener('click', () => submit(txt.value.trim()));
-    txt.addEventListener('keydown', e => { if (e.key === 'Enter') submit(txt.value.trim()); });
-
-    msgDiv.appendChild(fb);
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-fb';
+    wrap.appendChild(createFeedbackWidget({
+      onSubmit: (verdict, text) => logChatFeedback(verdict, text, question, response),
+    }));
+    msgDiv.appendChild(wrap);
   }
 
   // ── Core handler ────────────────────────────────────────────────────────────

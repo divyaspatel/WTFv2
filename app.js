@@ -1,4 +1,5 @@
 import { createChatSurface } from './chat.js';
+import { createFeedbackWidget } from './feedback.js';
 
 // ── Supabase config (anon key is public) ──────────────────────────────────────
 const SUPABASE_URL = 'https://agsxcnxfsawplkieochk.supabase.co';
@@ -331,10 +332,6 @@ function go(id) {
   document.getElementById(id).classList.add('on');
 }
 
-// ── SVG helpers ───────────────────────────────────────────────────────────────
-const THUMB_UP   = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9.5 2L6.5 8v6H12l2-6H9.5V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="2.5" y="8" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>`;
-const THUMB_DOWN = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" style="transform:rotate(180deg)"><path d="M9.5 2L6.5 8v6H12l2-6H9.5V2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><rect x="2.5" y="8" width="3" height="6" rx=".5" stroke="currentColor" stroke-width="1.3"/></svg>`;
-
 // ── Journey list ──────────────────────────────────────────────────────────────
 function renderJourneyList() {
   const list = document.getElementById('jl-list');
@@ -372,22 +369,6 @@ function renderTabs() {
   );
 }
 
-const fbRow = (milestoneId, section) => `
-  <div class="acc-fb" data-milestone="${milestoneId}" data-section="${section}">
-    <span class="acc-fb-lbl">Was this helpful?</span>
-    <div class="acc-fb-btns">
-      <button class="fb-btn up" title="Yes, helpful">${THUMB_UP}</button>
-      <button class="fb-btn dn" title="Not helpful">${THUMB_DOWN}</button>
-    </div>
-  </div>
-  <div class="fb-form" hidden>
-    <textarea class="fb-txt" rows="2" placeholder="What's working?"></textarea>
-    <div class="fb-acts">
-      <button class="fb-skip">Skip</button>
-      <button class="fb-submit">Submit</button>
-    </div>
-  </div>`;
-
 function renderTabBody() {
   const m = MILESTONES.find(x => x.id === viewStageId);
   if (!m) return;
@@ -413,48 +394,11 @@ function renderTabBody() {
     </div>`;
   }
 
-  document.getElementById('dt-body').innerHTML = html + fbRow(viewStageId, currentTab);
-}
-
-// ── Tab-content feedback (delegated) ──────────────────────────────────────────
-function handleBodyClick(e) {
-  const fbBtn = e.target.closest('.fb-btn');
-  if (fbBtn) {
-    const accFb = fbBtn.closest('.acc-fb');
-    const fbForm = accFb.nextElementSibling;
-    const isUp = fbBtn.classList.contains('up');
-
-    accFb.querySelectorAll('.fb-btn').forEach(b => b.classList.remove('selected'));
-    fbBtn.classList.add('selected');
-    fbForm.removeAttribute('hidden');
-    fbForm.querySelector('.fb-txt').placeholder = isUp ? 'What\'s working?' : 'What could be better?';
-    fbForm.dataset.verdict = isUp ? 'up' : 'down';
-    fbForm.querySelector('.fb-txt').focus();
-    return;
-  }
-
-  if (e.target.classList.contains('fb-submit') || e.target.classList.contains('fb-skip')) {
-    const fbForm = e.target.closest('.fb-form');
-    const accFb = fbForm.previousElementSibling;
-    const text = e.target.classList.contains('fb-submit')
-      ? fbForm.querySelector('.fb-txt').value.trim()
-      : null;
-    logFeedback({
-      milestone: accFb.dataset.milestone,
-      section: accFb.dataset.section,
-      verdict: fbForm.dataset.verdict,
-      text,
-    });
-    showThanks(accFb, fbForm);
-  }
-}
-
-function showThanks(accFb, fbForm) {
-  fbForm.setAttribute('hidden', '');
-  const thanks = document.createElement('div');
-  thanks.className = 'fb-thanks';
-  thanks.textContent = 'Thanks for the feedback.';
-  accFb.replaceWith(thanks);
+  const body = document.getElementById('dt-body');
+  body.innerHTML = html;
+  body.appendChild(createFeedbackWidget({
+    onSubmit: (verdict, text) => logFeedback({ milestone: viewStageId, section: currentTab, verdict, text }),
+  }));
 }
 
 // ── Feedback telemetry ────────────────────────────────────────────────────────
@@ -550,9 +494,6 @@ function init() {
     renderTabs();
     renderTabBody();
   });
-  const body = document.getElementById('dt-body');
-  body.addEventListener('click', handleBodyClick);
-
   // Chat dock open/close
   document.getElementById('dock-pill').addEventListener('click', expandDock);
   document.getElementById('dock-close').addEventListener('click', collapseDock);

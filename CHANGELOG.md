@@ -13,6 +13,27 @@
 
 ---
 
+## Shipped August 5, 2026 — One feedback widget, everywhere
+
+**What changed for users:** "Was this helpful?" now looks and behaves identically no matter where you see it — under a chat response in the stage-detail dock, under a chat response in the standalone chatbot, or under the questions/wisdom/resources tabs on a journey step. The thumbs are yellow line icons (no more circle buttons), turn green or red when you pick one, and the label now reads left-to-right in the order you'd say it: "Was this helpful?" then the thumbs, instead of the thumbs floating off to the right. The comment box only shows up after you've picked a thumb, matches the width of the chat response above it, and there's one Submit button — no more separate Skip.
+
+**User impact bullets:**
+- "Was this helpful?" label now sits directly before the thumbs, left-aligned, on every surface
+- Thumbs are yellow outline icons with no circular background; thumbs-up turns green when selected, thumbs-down turns red
+- Comment box placeholder is context-aware: "What was helpful (optional)?" after 👍, "What would be more useful (optional)?" after 👎
+- In chat, the comment box width now matches the response bubble above it instead of stretching wider
+- One "Submit" button everywhere — the separate "Skip" button on the journey-step feedback is gone (the field was already optional)
+- Submitting always shows "Thanks for the feedback."
+
+**Technical decisions:**
+Before this, the chatbot's feedback widget and the journey-step feedback widget were two separate implementations that had drifted: different markup, different CSS classes (`.mfb-*` vs `.fb-*`), different colors, different copy ("Thanks ✓" vs "Thanks for the feedback."), and — as the bubble-width bug from yesterday showed — no shared source of truth meant a fix in one place silently didn't apply to the other. Options were: keep patching both in parallel and hope they stay in sync, or collapse them into one component. Final call: pulled both into a single `createFeedbackWidget()` factory in a new `feedback.js`, imported by both `chat.js` (for the two chat surfaces) and `app.js` (for the journey-step tabs). The only thing that varies by context now is the `onSubmit` callback each caller passes in — chat logs `question`/`bot_response` alongside the verdict, journey steps log `milestone`/`section` — and a single CSS scoping rule (`.msg-fb .fbw-form { max-width: 82% }`) that caps the chat version's width to match the bubble above it. The color-changing thumbs also forced a decision: real 👍/👎 emoji can't be recolored via CSS, so both surfaces now use the same line-art SVG icons (`stroke="currentColor"`) that the journey-step widget already had, instead of emoji.
+
+Watch out for: since this is now one shared component, a bug here shows up in three places at once instead of one — but a fix also lands in three places at once, which is the whole point.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped August 4, 2026 — Chat polish: wider bot bubbles, honest feedback prompts
 
 **What changed for users:** Chat responses are easier to read, and giving feedback on a response is less committal. The chatbot's answer bubbles are noticeably wider (they'd quietly stayed narrow in the stage-detail dock even after we widened them in the standalone chat). While the bot is composing a reply, the dots now come with the words "Give me a minute…" instead of just three silently bouncing dots. And the response feedback widget — the 👍/👎 under every bot message — no longer traps you: the comment box used to appear whether or not you'd picked a thumb, which made the feedback prompt feel mandatory. Now it stays hidden until you actually pick 👍 or 👎, and once it shows, the field is clearly optional.

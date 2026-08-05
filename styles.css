@@ -488,51 +488,45 @@ html, body {
   line-height: 1.5;
 }
 
-/* Feedback row */
-.acc-fb {
+/* ── "Was this helpful?" feedback widget (feedback.js) ──
+   Shared by the editorial journey-step tabs and every chat response
+   (dock + full-screen). One set of rules so the UI can't drift between
+   surfaces — the chat context only adds a width cap, further down. */
+.fbw-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   padding-top: 12px;
   margin-top: 8px;
   border-top: 0.5px solid var(--bdr);
 }
-.acc-fb-lbl {
+.fbw-lbl {
   font-size: 11px;
   color: var(--mid);
+  white-space: nowrap;
 }
-.acc-fb-btns {
-  display: flex;
-  gap: 6px;
-}
-.fb-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--bdr);
-  background: var(--cream);
-  cursor: pointer;
+.fbw-btn {
+  background: none;
+  border: none;
+  padding: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--mid);
-  transition: all .15s;
-  font-family: inherit;
+  cursor: pointer;
+  color: #D9A441;
+  transition: opacity .15s, color .15s;
+  flex-shrink: 0;
 }
-.fb-btn:hover { border-color: var(--dark); color: var(--dark); }
-.fb-btn.up.selected  { background: var(--sageL); border-color: var(--sage); color: var(--sage); }
-.fb-btn.dn.selected  { background: var(--tcL); border-color: var(--tc); color: var(--tc); }
+.fbw-btn:hover       { opacity: .7; }
+.fbw-btn.up.selected { color: var(--sage); }
+.fbw-btn.dn.selected { color: #C0392B; }
 
-.fb-form {
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: var(--cream);
-  border-radius: 10px;
-}
-.fb-form[hidden] { display: none; }
+.fbw-form { margin-top: 8px; display: flex; flex-direction: column; gap: 7px; }
+.fbw-form[hidden] { display: none; }
 
-.fb-txt {
+.fbw-txt {
   width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--bdr);
   border-radius: 8px;
   background: var(--wht);
@@ -544,17 +538,12 @@ html, body {
   outline: none;
   transition: border-color .15s;
   line-height: 1.55;
-  margin-bottom: 8px;
 }
-.fb-txt:focus { border-color: var(--tc); }
-.fb-txt::placeholder { color: var(--lt); }
+.fbw-txt:focus { border-color: var(--tc); }
+.fbw-txt::placeholder { font-style: italic; color: var(--lt); }
 
-.fb-acts {
-  display: flex;
-  gap: 7px;
-  justify-content: flex-end;
-}
-.fb-submit {
+.fbw-acts { display: flex; justify-content: flex-end; }
+.fbw-submit {
   padding: 6px 14px;
   background: var(--tc);
   color: var(--wht);
@@ -566,26 +555,16 @@ html, body {
   cursor: pointer;
   transition: background .15s;
 }
-.fb-submit:hover { background: #A83A0C; }
-.fb-skip {
-  padding: 6px 14px;
-  background: none;
-  color: var(--mid);
-  border: 1px solid var(--bdr);
-  border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11.5px;
-  cursor: pointer;
-  transition: border-color .15s;
-}
-.fb-skip:hover { border-color: var(--mid); }
+.fbw-submit:hover { background: #A83A0C; }
 
-.fb-thanks {
+.fbw-thanks {
+  display: block;
   font-size: 11.5px;
   color: var(--sage);
   font-weight: 500;
-  padding: 6px 0;
-  text-align: right;
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 0.5px solid var(--bdr);
 }
 
 
@@ -841,61 +820,14 @@ html, body {
 .m-bbl ul, .m-bbl ol { padding-left: 14px; margin: 3px 0; }
 .m-bbl li { margin: 3px 0; }
 
-/* Chat response feedback widget */
+/* Chat response feedback widget — uses the shared .fbw-* rules above;
+   this just indents it under the avatar and caps its width to match
+   the bot bubble (.msg.b .m-bbl { max-width: 82% }) above it. */
 .msg-fb {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   margin-top: 4px;
   padding-left: 30px; /* align with bubble: avatar(24px) + gap(6px) */
 }
-.mfb-btns { display: flex; gap: 8px; }
-.mfb-btn {
-  background: none;
-  border: none;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 15px;
-  line-height: 1;
-  opacity: .55;
-  transition: opacity .15s;
-  flex-shrink: 0;
-}
-.mfb-btn:hover    { opacity: .85; }
-.mfb-btn.selected { opacity: 1; }
-.mfb-form { display: flex; flex-direction: column; gap: 5px; }
-.mfb-form[hidden] { display: none; }
-.mfb-txt {
-  border: 1px solid var(--bdr);
-  border-radius: var(--r-md);
-  padding: 5px 9px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  color: var(--dark);
-  background: var(--wht);
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-}
-.mfb-txt:focus { border-color: var(--tc); }
-.mfb-txt::placeholder { font-style: italic; color: var(--lt); }
-.mfb-acts { display: flex; gap: 5px; }
-.mfb-send {
-  border: none;
-  border-radius: var(--r-full);
-  padding: 4px 11px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 10.5px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--tc);
-  color: var(--wht);
-}
-.mfb-send:hover { background: #A83A0C; }
-.mfb-thanks { font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--sage); }
+.msg-fb .fbw-form { max-width: 82%; }
 
 /* Typing indicator */
 .t-row { display: flex; align-items: center; gap: 6px; }
