@@ -13,6 +13,29 @@
 
 ---
 
+## Shipped August 4, 2026 — Chat polish: wider bot bubbles, honest feedback prompts
+
+**What changed for users:** Chat responses are easier to read, and giving feedback on a response is less committal. The chatbot's answer bubbles are noticeably wider (they'd quietly stayed narrow in the stage-detail dock even after we widened them in the standalone chat). While the bot is composing a reply, the dots now come with the words "Give me a minute…" instead of just three silently bouncing dots. And the response feedback widget — the 👍/👎 under every bot message — no longer traps you: the comment box used to appear whether or not you'd picked a thumb, which made the feedback prompt feel mandatory. Now it stays hidden until you actually pick 👍 or 👎, and once it shows, the field is clearly optional.
+
+**User impact bullets:**
+- Bot response bubbles in the stage-detail chat dock are now as wide as the ones in the full-screen chat — no more narrow, heavily-wrapped text
+- Typing indicator now reads "Give me a minute…" alongside the animated dots
+- The feedback comment box only appears after tapping 👍 or 👎, not before
+- Comment box placeholder now reads "Your feedback on this response (optional)," styled in italic gray so it reads as a hint, not a demand
+- Thumbs icons no longer sit inside a circular button outline — just the icon, dimmed until selected
+- Removed the separate "Skip" button; the comment field is optional by design, so Send alone covers both "just the thumb" and "thumb plus a note"
+
+**Technical decisions:**
+The bubble-width miss was a copy-paste gap: when we widened chat bubbles, the CSS override went on `.ch-msgs .m-bbl` (the full-screen chat's message list) but never got mirrored onto `.dock-msgs .m-bbl` (the stage-detail dock), so the dock silently kept the old 210px cap. Fixed by moving the wide `max-width: 82%` onto `.msg.b .m-bbl` — a rule scoped to bot messages generally, not a specific chat surface — so any current or future chat surface gets it automatically instead of needing a per-surface override.
+
+The feedback-box bug was more interesting: the box's wrapper (`.mfb-form`) was set to `hidden` via the HTML attribute, but the CSS class rule `.mfb-form { display: flex; }` has equal specificity to the browser's built-in `[hidden] { display: none; }` rule — and author CSS beats user-agent CSS in a specificity tie. So the box was visible from the moment a message rendered, regardless of whether a thumb had been picked. Added an explicit `.mfb-form[hidden] { display: none; }` rule to make the intent unambiguous instead of relying on the browser default winning a fight it was always going to lose.
+
+Watch out for: this feedback widget is shared code (`createChatSurface()` in chat.js), so the fix applies identically to the dock and the full-screen chat — no separate patch needed, but also no separate testing signal if it breaks again in only one place.
+
+**Blog URL:** *(coming soon)*
+
+---
+
 ## Shipped August 4, 2026 — Visual cleanup: consistent nav, quieter home cards
 
 **What changed for users:** Small polish pass on the redesign that shipped earlier today. The "Ask anything" card no longer looks visually different from "Your journey" — both read as equal options now. The chat icon switched from a black square to the same orange-on-cream treatment as the journey icon, so the two cards feel like a matched set. The human silhouette icon that sat in the home screen's top-right corner is gone; that spot is now the "What's New" link, and it's in the same spot on every screen, not just buried in a footer. The landing page's subhead is shorter.

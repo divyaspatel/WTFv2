@@ -119,7 +119,7 @@ export function createChatSurface({ ids, getMilestone = () => null }) {
   function showTyping() {
     typingEl = document.createElement('div');
     typingEl.className = 'msg b';
-    typingEl.innerHTML = `<div class="t-row"><div class="m-av">W</div><div class="t-bbl"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+    typingEl.innerHTML = `<div class="t-row"><div class="m-av">W</div><div class="t-bbl"><span class="t-txt">Give me a minute…</span><div class="t-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div></div></div>`;
     msgsEl.appendChild(typingEl);
     scrollMsgs();
   }
@@ -164,10 +164,9 @@ export function createChatSurface({ ids, getMilestone = () => null }) {
         <button class="mfb-btn dn" aria-label="Not helpful">👎</button>
       </div>
       <div class="mfb-form" hidden>
-        <input class="mfb-txt" type="text" placeholder="" maxlength="280">
+        <input class="mfb-txt" type="text" placeholder="Your feedback on this response (optional)" maxlength="280">
         <div class="mfb-acts">
           <button class="mfb-send">Send</button>
-          <button class="mfb-skip">Skip</button>
         </div>
       </div>
     `;
@@ -177,14 +176,12 @@ export function createChatSurface({ ids, getMilestone = () => null }) {
     const form  = fb.querySelector('.mfb-form');
     const txt   = fb.querySelector('.mfb-txt');
     const send  = fb.querySelector('.mfb-send');
-    const skip  = fb.querySelector('.mfb-skip');
     let verdict = null;
 
     function selectVerdict(v) {
       verdict = v;
       upBtn.classList.toggle('selected', v === 'up');
       dnBtn.classList.toggle('selected', v === 'down');
-      txt.placeholder = v === 'up' ? "What's working?" : 'What could be better?';
       form.removeAttribute('hidden');
       txt.focus();
     }
@@ -197,7 +194,6 @@ export function createChatSurface({ ids, getMilestone = () => null }) {
     upBtn.addEventListener('click', () => selectVerdict('up'));
     dnBtn.addEventListener('click', () => selectVerdict('down'));
     send.addEventListener('click', () => submit(txt.value.trim()));
-    skip.addEventListener('click', () => submit(null));
     txt.addEventListener('keydown', e => { if (e.key === 'Enter') submit(txt.value.trim()); });
 
     msgDiv.appendChild(fb);

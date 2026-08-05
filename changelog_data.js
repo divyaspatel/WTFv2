@@ -5,6 +5,27 @@
 export const CHANGELOG = [
   {
     date: "August 4, 2026",
+    title: "Chat polish: wider bot bubbles, honest feedback prompts",
+    userSummary: "Chat responses are easier to read, and giving feedback on a response is less committal. The chatbot's answer bubbles are noticeably wider in the stage-detail dock, matching the standalone chat. The typing indicator now says 'Give me a minute…'. And the response feedback widget no longer shows its comment box until you've actually picked a thumb.",
+    userBullets: [
+      "Bot response bubbles in the stage-detail chat dock are now as wide as the full-screen chat's — no more narrow, heavily-wrapped text",
+      "Typing indicator now reads 'Give me a minute…' alongside the animated dots",
+      "The feedback comment box only appears after tapping 👍 or 👎, not before",
+      "Comment box placeholder reads 'Your feedback on this response (optional)', styled in italic gray",
+      "Thumbs icons no longer sit inside a circular button outline — just the icon, dimmed until selected",
+      "Removed the separate 'Skip' button; the comment field is optional by design, so Send alone covers both cases",
+    ],
+    buildersNote: `
+      <p><strong>The bubble-width miss:</strong> a copy-paste gap. When we widened chat bubbles, the CSS override went on <code>.ch-msgs .m-bbl</code> (the full-screen chat) but never got mirrored onto <code>.dock-msgs .m-bbl</code> (the stage-detail dock), so the dock silently kept the old 210px cap. Fixed by moving the wide <code>max-width: 82%</code> onto <code>.msg.b .m-bbl</code> — scoped to bot messages generally rather than one chat surface — so any current or future chat surface inherits it automatically.</p>
+
+      <p><strong>The feedback-box bug was more interesting:</strong> the box's wrapper (<code>.mfb-form</code>) was set to <code>hidden</code> via the HTML attribute, but the CSS class rule <code>.mfb-form { display: flex; }</code> has equal specificity to the browser's built-in <code>[hidden] { display: none; }</code> rule — and author CSS beats user-agent CSS in a specificity tie. So the box was visible the moment a message rendered, regardless of whether a thumb had been picked. Added an explicit <code>.mfb-form[hidden] { display: none; }</code> rule instead of relying on a browser default that was always going to lose that fight.</p>
+
+      <p><strong>Watch out for:</strong> this feedback widget is shared code (<code>createChatSurface()</code> in chat.js), so the fix applies identically to the dock and the full-screen chat — no separate patch needed, but also no separate testing signal if it breaks again in only one place.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "August 4, 2026",
     title: "Visual cleanup: consistent nav, quieter home cards",
     userSummary: "Small polish pass on the redesign that shipped earlier today. The 'Ask anything' card no longer looks visually different from 'Your journey' — both read as equal options now. The chat icon switched from a black square to the same orange-on-cream treatment as the journey icon. The human silhouette icon in Home's top-right corner is gone; that spot is now the 'What's New' link, in the same spot on every screen.",
     userBullets: [
