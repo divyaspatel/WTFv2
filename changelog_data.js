@@ -5,6 +5,31 @@
 export const CHANGELOG = [
   {
     date: "August 5, 2026",
+    title: "Feedback and chat logging were never actually saving",
+    userSummary: "Nothing visible — this is entirely behind the scenes. But it's the most important fix in this project's history so far: every piece of feedback and every logged chat message since launch was silently discarded before it ever reached the database.",
+    userBullets: [
+      "No visible change — feedback submission and the chat UI look and behave exactly the same",
+      "Behind the scenes: feedback and chat logs will start actually persisting once the accompanying database migration is applied",
+    ],
+    buildersNote: `
+      <p><strong>The discovery:</strong> investigating a "the feedback UI seems off" report led to a much bigger find — nothing has ever actually been written to Supabase. Two independent bugs were stacked on top of each other.</p>
+
+      <p><strong>Bug one:</strong> the client sent a field called <code>user_session_id</code> on every feedback insert, but the live <code>feedback_events</code> table has no column by that name and never did — Postgres rejected every request at the schema level.</p>
+
+      <p><strong>Bug two:</strong> even correcting that, the table (and separately, <code>chat_messages</code>) has Row-Level Security enabled with no INSERT policy for the anon role the app authenticates as — the default Supabase posture for any table created via the dashboard UI, which silently blocks all writes until a policy is explicitly added.</p>
+
+      <p><strong>Why it went unnoticed:</strong> the logging code wrapped every request in a bare try/catch with no check on the response status, so failures never even reached the browser console.</p>
+
+      <p><strong>The fix, split across two boundaries:</strong> the client-side half — sending the field Postgres actually expects (<code>session_id</code>, matching the pattern <code>chat_messages</code> already used) and surfacing failures to the console instead of swallowing them — shipped in this commit. The database-side half — adding the missing <code>session_id</code> column and the two missing INSERT policies — is a SQL migration that has to be run by hand in the Supabase SQL editor, since it needs service-role access this client never has.</p>
+
+      <p><strong>Also surfaced along the way:</strong> a second table called <code>feedback</code> exists in the same project with a completely different, older shape (<code>session_id</code>, numeric <code>rating</code>, <code>comment</code>) and isn't referenced anywhere in the current codebase — an orphan from an earlier design, left alone for now.</p>
+
+      <p><strong>Watch out for:</strong> until the migration is actually run, feedback and chat logging will keep failing exactly as before — the client fix alone isn't sufficient.</p>
+    `,
+    blogUrl: null,
+  },
+  {
+    date: "August 5, 2026",
     title: "One feedback widget, everywhere",
     userSummary: "'Was this helpful?' now looks and behaves identically no matter where you see it — under a chat response in the stage-detail dock, under a chat response in the standalone chatbot, or under the tabs on a journey step. The thumbs are yellow line icons (no circle buttons), turn green or red when picked, and the label reads left-to-right in order: 'Was this helpful?' then the thumbs. The comment box only shows after picking a thumb, matches the width of the chat response above it, and there's one Submit button.",
     userBullets: [

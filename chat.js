@@ -66,7 +66,7 @@ function renderMarkdown(text) {
 // ── Telemetry ─────────────────────────────────────────────────────────────────
 async function post(table, body) {
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -76,7 +76,8 @@ async function post(table, body) {
       },
       body: JSON.stringify(body),
     });
-  } catch { /* fail silently */ }
+    if (!res.ok) console.error(`[${table}]`, res.status, await res.text());
+  } catch (err) { console.error(`[${table}]`, err); }
 }
 
 // ── Chat surface factory ──────────────────────────────────────────────────────
@@ -145,7 +146,7 @@ export function createChatSurface({ ids, getMilestone = () => null }) {
   function logChatFeedback(verdict, text, question, response) {
     if (!verdict) return;
     post('feedback_events', {
-      user_session_id: SESSION_ID,
+      session_id: SESSION_ID,
       source: 'chatbot',
       verdict,
       optional_text: text || null,

@@ -402,12 +402,12 @@ function renderTabBody() {
 }
 
 // ── Feedback telemetry ────────────────────────────────────────────────────────
-// Requires a `feedback_events` table in Supabase with columns:
-//   id, user_session_id, screen, milestone, section, verdict, optional_text, created_at
+// `feedback_events` columns: id, session_id, source, verdict, optional_text,
+// milestone, section, question, bot_response, created_at
 async function logFeedback({ milestone, section, verdict, text }) {
   if (!verdict) return;
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/feedback_events`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/feedback_events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -416,7 +416,7 @@ async function logFeedback({ milestone, section, verdict, text }) {
         'Prefer': 'return=minimal',
       },
       body: JSON.stringify({
-        user_session_id: SESSION_ID,
+        session_id: SESSION_ID,
         source: 'editorial',
         verdict,
         optional_text: text || null,
@@ -424,6 +424,7 @@ async function logFeedback({ milestone, section, verdict, text }) {
         section,
       }),
     });
+    if (!res.ok) console.error('[feedback]', res.status, await res.text());
   } catch { /* fail silently */ }
 }
 
